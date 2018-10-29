@@ -1,0 +1,144 @@
+ou#+TITLE: Literate Programming
+#+AUTHOR: Lucas Nesi
+#+STARTUP: overview indent
+#+TAGS: noexport(n) deprecated(d)
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+#+SEQ_TODO: TODO(t!) STARTED(s!) WAITING(w!) | DONE(d!) CANCELLED(c!) DEFERRED(f!)
+
+* 29-10-2018 Meeting 1
+** Check Pakages
+
+#+begin_src R :results output :session *R* :exports both
+install.packages(c("knitr", "tidyverse"))
+#+end_src
+
+** Run
+
+#+begin_src R :results output :session *R* :exports both
+knitr::opts_chunk$set(echo = TRUE)
+#+end_src
+
+#+RESULTS:
+
+** Intro
+
+#+begin_src R :results output :session *R* :exports both
+set.seed(42);
+times <- rnorm(n = 50, mean = 4, sd = 1.5);
+write.csv(times, "./handson/pp-synthetic.csv", row.names = FALSE);
+#+end_src
+
+#+RESULTS:
+
+** Read
+#+begin_src R :results output :session *R* :exports both
+df <- read.csv("./handson/pp-synthetic.csv", header=TRUE, col.names=c("time"))
+head(df);
+#+end_src
+
+#+RESULTS:
+:       time
+: 1 6.056438
+: 2 3.152953
+: 3 4.544693
+: 4 4.949294
+: 5 4.606402
+: 6 3.840813
+
+** Overview
+#+begin_src R :results output :session *R* :exports both
+plot(df$time, ylab="Time (seconds)", xlab="Measurement Number");
+#+end_src
+
+#+RESULTS:
+
+** Statistical
+#+begin_src R :results output :session *R* :exports both
+summary(df$time);
+#+end_src
+
+#+RESULTS:
+:    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+: 0.01532 3.05166 3.84941 3.94649 4.97609 7.42997
+
+** Boxplot
+#+begin_src R :results output :session *R* :exports both
+boxplot(df$time, ylab="Time (seconds)")
+#+end_src
+
+#+RESULTS:
+
+** Histogram
+#+begin_src R :results output :session *R* :exports both
+hist(df$time, breaks=7, xlab="Time (seconds)", main="Histogram of Ping-Pong")
+#+end_src
+
+#+RESULTS:
+
+#+begin_src R :results output :session *R* :exports both
+hist(df$time, breaks=2, xlab="Time (seconds)", main="Histogram of Ping-Pong")
+#+end_src
+
+#+RESULTS:
+
+** Variability
+#+begin_src R :results output :session *R* :exports both
+sd(df$time)
+#+end_src
+
+#+RESULTS:
+: [1] 1.727215
+
+** Wrap up
+#+begin_src R :results output :session *R* :exports both
+mean(df$time)
+sd(df$time)
+#+end_src
+
+#+RESULTS:
+: [1] 3.946492
+: [1] 1.727215
+
+** Real Ping-Pong Measurements (TD)
+
+#+begin_src shell :results output :exports both
+ls ./handson/data/PP_size*.csv
+#+end_src
+
+#+RESULTS:
+: ./handson/data/PP_size_1.csv
+: ./handson/data/PP_size_2.csv
+: ./handson/data/PP_size_3.csv
+: ./handson/data/PP_size_4.csv
+: ./handson/data/PP_size_5.csv
+
+#+begin_src R :results output :session *R* :exports both
+df1 <- read.csv("./handson/data/PP_size_1.csv");
+head(df1);
+#+end_src
+
+#+RESULTS:
+:          time
+: 1 0.000133434
+: 2 0.000099994
+: 3 0.000052050
+: 4 0.000038092
+: 5 0.000030759
+: 6 0.000030473
+
+** Iteration Duration of a Geophysics Parallel Application
+
+#+begin_src R :results output :session *R* :exports both
+df <- read.csv("./handson/data/IterDuration.csv");
+head(df);
+#+end_src
+
+#+RESULTS:
+:   duration
+: 1 3.539277
+: 2 3.539381
+: 3 3.539294
+: 4 3.539549
+: 5 3.550483
+: 6 3.586875
