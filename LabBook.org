@@ -142,3 +142,346 @@ head(df);
 : 4 3.539549
 : 5 3.550483
 : 6 3.586875
+* 30-10-2018 Meeting 2
+** Loading
+#+begin_src R :results output :session *R* :exports both
+library(tidyverse)
+options(crayon.enabled = FALSE)
+#+end_src
+
+#+RESULTS:
+
+** Get data
+
+#+begin_src R :results output :session *R* :exports both
+file = "dpt2017_txt.zip"
+if(!file.exists(file)){
+  download.file("https://www.insee.fr/fr/statistiques/fichier/2540004/dpt2017_txt.zip",
+	destfile=file)
+}
+unzip(file)
+#+end_src
+
+#+RESULTS:
+: trying URL 'https://www.insee.fr/fr/statistiques/fichier/2540004/dpt2017_txt.zip'
+: downloaded 12.3 MB
+
+** Load Data
+
+#+begin_src R :results output :session *R* :exports both
+df <- read_tsv (file = "dpt2017.txt",
+                locale = locale(encoding = "ISO-8859-1"));
+#+end_src
+
+** Check data
+#+begin_src R :results output :session *R* :exports both
+df
+#+end_src
+
+#+RESULTS:
+#+begin_example
+# A tibble: 3,573,026 x 5
+    sexe preusuel annais dpt   nombre
+   <int> <chr>    <chr>  <chr>  <int>
+ 1     1 A        XXXX   XX        28
+ 2     1 AADAM    XXXX   XX        24
+ 3     1 AADEL    XXXX   XX        55
+ 4     1 AADIL    1983   84         3
+ 5     1 AADIL    1992   92         3
+ 6     1 AADIL    XXXX   XX       171
+ 7     1 AAKASH   XXXX   XX        25
+ 8     1 AARON    1962   75         3
+ 9     1 AARON    1976   75         3
+10     1 AARON    1982   75         3
+# ... with 3,573,016 more rows
+#+end_example
+
+** First Name frequency
+#+begin_src R :results output :session *R* :exports both
+df %>% group_by(sexe, preusuel, annais) %>% summarize(total = sum(nombre)) %>% filter(preusuel!="_PRENOMS_RARES")
+#+end_src
+
+#+RESULTS:
+#+begin_example
+# A tibble: 278,754 x 4
+# Groups:   sexe, preusuel [34,771]
+    sexe preusuel      annais total
+   <int> <chr>         <chr>  <int>
+ 1     1 A             XXXX      28
+ 2     1 AADAM         XXXX      24
+ 3     1 "AÃ\u0089DAN" 2015       9
+ 4     1 "AÃ\u0089DAN" 2016       6
+ 5     1 "AÃ\u0089DAN" 2017       3
+ 6     1 "AÃ\u0089DAN" XXXX     134
+ 7     1 "AÃ\u008fDAN" 2010       3
+ 8     1 "AÃ\u008fDAN" 2011      25
+ 9     1 "AÃ\u008fDAN" 2012      31
+10     1 "AÃ\u008fDAN" 2013      69
+# ... with 278,744 more rows
+#+end_example
+
+** My Name
+
+#+begin_src R :results output :session *R* :exports both
+df %>% filter(preusuel=="LUCAS", annais!="XXXX") -> lucas_df
+lucas_df %>% group_by(sexe, preusuel, annais) %>% summarize(total = sum(nombre))  %>% ungroup() -> lucas_per_year
+
+lucas_per_year
+
+ggplot(data=lucas_per_year, aes(x=annais, y=total, group=preusuel)) + geom_line()
+      
+
+#lucas_df %>% group_by(sexe, preusuel, dpt) %>% summarize(total = sum(nombre)) %>% arrange(-total)
+#+end_src
+
+#+RESULTS:
+#+begin_example
+# A tibble: 69 x 4
+    sexe preusuel annais total
+   <int> <chr>    <chr>  <int>
+ 1     1 LUCAS    1920       3
+ 2     1 LUCAS    1930       4
+ 3     1 LUCAS    1931       6
+ 4     1 LUCAS    1935       3
+ 5     1 LUCAS    1947       4
+ 6     1 LUCAS    1949       8
+ 7     1 LUCAS    1950       7
+ 8     1 LUCAS    1951      11
+ 9     1 LUCAS    1952       6
+10     1 LUCAS    1954       8
+# ... with 59 more rows
+#+end_example
+** Geo
+#+begin_src R :results output :session *R* :exports both
+df %>% group_by(dpt) %>% filter(dpt!="XX") %>% summarize(total = sum(nombre))
+df %>% group_by(dpt,annais) %>% filter(dpt!="XX") %>% summarize(total = sum(nombre))
+#+end_src
+
+#+RESULTS:
+#+begin_example
+# A tibble: 99 x 2
+   dpt    total
+   <chr>  <int>
+ 1 01    435498
+ 2 02    839763
+ 3 03    496668
+ 4 04    105429
+ 5 05    125521
+ 6 06    800801
+ 7 07    353217
+ 8 08    446214
+ 9 09    156054
+10 10    378477
+# ... with 89 more rows
+# A tibble: 11,342 x 3
+# Groups:   dpt [?]
+   dpt   annais total
+   <chr> <chr>  <int>
+ 1 01    1900    3173
+ 2 01    1901    3584
+ 3 01    1902    3489
+ 4 01    1903    3541
+ 5 01    1904    3725
+ 6 01    1905    3703
+ 7 01    1906    3797
+ 8 01    1907    3658
+ 9 01    1908    3950
+10 01    1909    4011
+# ... with 11,332 more rows
+#+end_example
+
+** Names variety by dpt per year
+#+begin_src R :results output :session *R* :exports both
+df %>% group_by(dpt, annais) %>% filter(dpt!="XX") %>% 
+       summarize(total = n()) %>% ungroup() %>%
+       group_by(annais) %>% arrange(-total) %>% slice(1) %>%
+       ggplot(aes(x=annais, y=total, colour=dpt)) + geom_point() +
+       scale_x_discrete()
+#+end_src
+
+#+RESULTS:
+* 31-10-2018 Meeting 3
+** POA accidents
+*** Download Data
+#+begin_src shell :results output :exports both
+wget http://datapoa.com.br/storage/f/2017-08-03T13%3A19%3A45.538Z/acidentes-2016.csv
+#+end_src
+
+#+RESULTS:
+
+#+begin_src shell :results output :exports both
+ls -l
+#+end_src
+
+#+RESULTS:
+#+begin_example
+total 92468
+-rw-rw-r-- 1 llnesi llnesi  3009167 ago  3  2017 acidentes-2016.csv
+-rw-rw-r-- 1 llnesi llnesi  3009167 ago  3  2017 acidentes-2016.csv.1
+drwxrwxr-x 3 llnesi llnesi     4096 out 29 10:23 data
+-rw-rw-r-- 1 llnesi llnesi 75721433 out 30 08:58 dpt2017.txt
+-rw-rw-r-- 1 llnesi llnesi 12868031 out 30 08:58 dpt2017_txt.zip
+drwxrwxr-x 3 llnesi llnesi     4096 out 29 11:45 handson
+drwxrwxr-x 2 llnesi llnesi     4096 out 29 10:23 img
+-rw-rw-r-- 1 llnesi llnesi     7511 out 31 09:52 #LabBook.org#
+-rw-rw-r-- 1 llnesi llnesi     7216 out 30 10:10 LabBook.org
+-rw-rw-r-- 1 llnesi llnesi     1176 out 29 11:45 LabBook.org~
+-rw-rw-r-- 1 llnesi llnesi    22143 out 29 10:23 README.org
+drwxrwxr-x 7 llnesi llnesi     4096 out 29 10:23 slides
+drwxrwxr-x 3 llnesi llnesi     4096 out 29 10:23 tasks
+#+end_example
+
+*** Load Data
+#+begin_src R :results output :session *R* :exports both
+library(tidyverse)
+options(crayon.enabled = FALSE)
+#+end_src
+
+#+RESULTS:
+
+#+begin_src R :results output :session *R* :exports both
+df <- read_csv2 (file = "acidentes-2016.csv")
+#+end_src
+
+#+RESULTS:
+#+begin_example
+Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
+Parsed with column specification:
+cols(
+  .default = col_integer(),
+  LONGITUDE = col_number(),
+  LATITUDE = col_number(),
+  LOG1 = col_character(),
+  LOG2 = col_character(),
+  LOCAL = col_character(),
+  TIPO_ACID = col_character(),
+  LOCAL_VIA = col_character(),
+  DATA = col_date(format = ""),
+  DATA_HORA = col_datetime(format = ""),
+  DIA_SEM = col_character(),
+  HORA = col_time(format = ""),
+  TEMPO = col_character(),
+  NOITE_DIA = col_character(),
+  FONTE = col_character(),
+  BOLETIM = col_character(),
+  REGIAO = col_character(),
+  CONSORCIO = col_character()
+)
+See spec(...) for full column specifications.
+#+end_example
+
+*** Check
+
+#+begin_src R :results output :session *R* :exports both
+df
+#+end_src
+
+#+RESULTS:
+#+begin_example
+# A tibble: 12,515 x 44
+       ID LONGITUDE LATITUDE LOG1  LOG2  PREDIAL1 LOCAL TIPO_ACID LOCAL_VIA
+    <int>     <dbl>    <dbl> <chr> <chr>    <int> <chr> <chr>     <chr>    
+ 1 623243 -51233864  -3.01e7 R AR… R CO…        0 Cruz… ATROPELA… R ARAPEI…
+ 2 622413 -51231947  -3.01e7 R PA… R JO…        0 Cruz… ABALROAM… R PADRE …
+ 3 622460 -51212026  -3.00e7 AV D… <NA>         0 Logr… ATROPELA… AV DO LA…
+ 4 622540 -51185614  -3.00e7 AV D… R CA…        0 Cruz… CHOQUE    AV DR NI…
+ 5 622181 -51097360  -3.01e7 ESTR… <NA>      8487 Logr… CHOQUE    8487 EST…
+ 6 622232 -51225022  -3.00e7 AV I… <NA>       320 Logr… COLISAO   320 AV I…
+ 7 622414 -51221523  -3.01e7 R JO… <NA>       965 Logr… COLISAO   965 R JO…
+ 8 622186 -51218406  -3.00e7 AV E… <NA>       240 Logr… ABALROAM… 240 AV E…
+ 9 622235 -51215827  -3.00e7 R GE… <NA>      1445 Logr… COLISAO   1445 R G…
+10 622185 -51200627  -3.00e7 AV E… <NA>         0 Logr… QUEDA     AV EDVAL…
+# ... with 12,505 more rows, and 35 more variables: QUEDA_ARR <int>,
+#   DATA <date>, DATA_HORA <dttm>, DIA_SEM <chr>, HORA <time>, FERIDOS <int>,
+#   FERIDOS_GR <int>, MORTES <int>, MORTE_POST <int>, FATAIS <int>, AUTO <int>,
+#   TAXI <int>, LOTACAO <int>, ONIBUS_URB <int>, ONIBUS_MET <int>,
+#   ONIBUS_INT <int>, CAMINHAO <int>, MOTO <int>, CARROCA <int>,
+#   BICICLETA <int>, OUTRO <int>, TEMPO <chr>, NOITE_DIA <chr>, FONTE <chr>,
+#   BOLETIM <chr>, REGIAO <chr>, DIA <int>, MES <int>, ANO <int>,
+#   FX_HORA <int>, CONT_ACID <int>, CONT_VIT <int>, UPS <int>, CONSORCIO <chr>,
+#   CORREDOR <int>
+#+end_example
+
+*** Check Date per Month
+
+#+begin_src R :results output :session *R* :exports both
+df %>% group_by(MES) %>% summarize(total = n())
+#+end_src
+
+#+RESULTS:
+#+begin_example
+# A tibble: 12 x 2
+     MES total
+   <int> <int>
+ 1     1  1021
+ 2     2   816
+ 3     3  1172
+ 4     4  1068
+ 5     5  1078
+ 6     6  1124
+ 7     7  1071
+ 8     8  1098
+ 9     9   956
+10    10  1041
+11    11  1035
+12    12  1035
+#+end_example
+
+*** Check Date per weekday
+
+#+begin_src R :results output :session *R* :exports both
+df %>% group_by(DIA_SEM) %>% summarize(total = n()) %>%
+       mutate(DIA_SEM = factor(DIA_SEM, levels=c("SEGUNDA-FEIRA",
+                                                 "TERCA-FEIRA",
+                                                 "QUARTA-FEIRA", "QUINTA-FEIRA", "SEXTA-FEIRA", "SABADO", "DOMINGO"))) %>%
+       arrange(DIA_SEM)
+#+end_src
+
+#+RESULTS:
+#+begin_example
+# A tibble: 7 x 2
+  DIA_SEM       total
+  <fct>         <int>
+1 SEGUNDA-FEIRA  2076
+2 TERCA-FEIRA    1928
+3 QUARTA-FEIRA   2037
+4 QUINTA-FEIRA   2043
+5 SEXTA-FEIRA    2148
+6 SABADO         1361
+7 DOMINGO         922
+#+end_example
+
+*** Check Occurencies per hour
+
+#+begin_src R :results output graphics :file (org-babel-temp-file "figure" ".png") :exports both :width 600 :height 400 :session *R* 
+df %>% mutate(HOUR_STEP = strftime(HORA,"%H", tz="-3")) %>%
+       group_by(HOUR_STEP) %>% summarize(total = n()) %>%
+       ggplot(aes(x=HOUR_STEP, y=total)) + geom_col()
+#+end_src
+
+#+RESULTS:
+[[file:/tmp/babel-25368MSa/figure25368ZvQ.png]]
+
+*** Check per location
+
+#+begin_src R :results output :session *R* :exports both
+df %>% group_by(LOG1) %>% summarize(total = n()) %>% arrange(-total)
+#+end_src
+
+#+RESULTS:
+#+begin_example
+# A tibble: 1,334 x 2
+   LOG1                           total
+   <chr>                          <int>
+ 1 AV IPIRANGA                      610
+ 2 AV ASSIS BRASIL                  532
+ 3 AV PROTASIO ALVES                502
+ 4 AV BENTO GONCALVES               376
+ 5 AV SERTORIO                      349
+ 6 AV FARRAPOS                      257
+ 7 AV PROF OSCAR PEREIRA            224
+ 8 AV BALTAZAR DE OLIVEIRA GARCIA   170
+ 9 AV DA CAVALHADA                  155
+10 AV JUCA BATISTA                  154
+# ... with 1,324 more rows
+#+end_example
