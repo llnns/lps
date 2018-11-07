@@ -499,7 +499,6 @@ df %>% group_by(LOG1) %>% summarize(total = n()) %>% arrange(-total)
 # ... with 1,324 more rows
 #+end_example
 
-
 *** Map
 #+begin_src R :results output :session *R* :exports both
 remove.packages(ggmap)
@@ -574,3 +573,23 @@ ggmap::get_stamenmap(bbox = c(left = -51.3, bottom = -30.15, right = -51.0, top 
 #+end_src
 
 #+RESULTS:
+
+
+* Homework 1
+
+Source: https://g1.globo.com/economia/noticia/2018/10/31/copom-mantem-taxa-basica-de-juros-em-65-ao-ano.ghtml
+
+[[./graph.png]]
+
+Analysis:
+- The information is very clear. It states the evolution of the
+  federal funds rate of Brazil (Federal Interest rate) over the last
+  months.
+- In the Y-axis there is the rate of % per year and in the X-axis the
+  months from january/2018 to october/2018.
+- The points are the values established by the Brasil Central Bank.
+Problems:
+- The Y-axis doesn't start on 0, giving the impression that the left
+  months presents a much higher value than the right ones.
+
+
