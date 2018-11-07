@@ -368,6 +368,7 @@ cols(
   CONSORCIO = col_character()
 )
 See spec(...) for full column specifications.
+|=======                                                                 |  10%|=========                                                               |  12%|==========                                                              |  14%|===========                                                             |  16%|=============                                                           |  18%|==============                                                          |  19%|===============                                                         |  21%|=================                                                       |  23%|==================                                                      |  25%|===================                                                     |  27%|=====================                                                   |  28%|======================                                                  |  30%|=======================                                                 |  32%|=========================                                               |  34%|=======================                                         |  36%    1 MB|========================                                        |  38%    1 MB|=========================                                       |  39%    1 MB|===========================                                     |  41%    1 MB|============================                                    |  43%    1 MB|=============================                                   |  45%    1 MB|==============================                                  |  47%    1 MB|===============================                                 |  48%    1 MB|================================                                |  50%    1 MB|==================================                              |  52%    1 MB|===================================                             |  54%    1 MB|====================================                            |  56%    1 MB|=====================================                           |  57%    1 MB|======================================                          |  59%    1 MB|========================================                        |  61%    1 MB|=========================================                       |  63%    1 MB|==========================================                      |  65%    1 MB|===========================================                     |  67%    1 MB|============================================                    |  68%    1 MB|=============================================                   |  70%    2 MB|===============================================                 |  72%    2 MB|================================================                |  74%    2 MB|=================================================               |  76%    2 MB|==================================================              |  77%    2 MB|===================================================             |  79%    2 MB|=====================================================           |  81%    2 MB|======================================================          |  83%    2 MB|=======================================================         |  85%    2 MB|========================================================        |  87%    2 MB|=========================================================       |  88%    2 MB|==========================================================      |  90%    2 MB|============================================================    |  92%    2 MB|=============================================================   |  94%    2 MB|==============================================================  |  96%    2 MB|=============================================================== |  98%    2 MB|================================================================|  99%    2 MB|=================================================================| 100%    2 MB
 #+end_example
 
 *** Check
@@ -402,30 +403,47 @@ df
 #   CORREDOR <int>
 #+end_example
 
-*** Check Date per Month
+*** Is there a time of the year with more accidents?
 
 #+begin_src R :results output :session *R* :exports both
-df %>% group_by(MES) %>% summarize(total = n())
+df %>% group_by(MES) %>%
+       summarize(total = n()) %>%
+       mutate(MES = factor(month.abb[MES], levels=month.abb[1:12])) %>% 
+       ggplot(aes(x=MES, y=total, fill=factor(MES))) +
+       theme_bw(base_size=15) +
+       geom_col() +
+       xlab("Month") +
+       ylab("Total Number of Accidents") +
+       ggtitle("Total number of Accidents in Porto Alegre 2016") +
+       theme(legend.position="bottom") + 
+       scale_fill_discrete(name = "Month")
 #+end_src
 
 #+RESULTS:
-#+begin_example
-# A tibble: 12 x 2
-     MES total
-   <int> <int>
- 1     1  1021
- 2     2   816
- 3     3  1172
- 4     4  1068
- 5     5  1078
- 6     6  1124
- 7     7  1071
- 8     8  1098
- 9     9   956
-10    10  1041
-11    11  1035
-12    12  1035
-#+end_example
+
+
+
+*** How many vehicles are usually involved?
+#+begin_src R :results output :session *R* :exports both
+df %>% group_by(MES) %>%
+       mutate(TOTAL_VEH = AUTO + TAXI + LOTACAO + 
+                          ONIBUS_URB + ONIBUS_MET + 
+                          ONIBUS_INT + CAMINHAO + MOTO +
+                          CARROCA + BICICLETA + OUTRO) %>%
+       summarize(total = mean(TOTAL_VEH), sd=sd(TOTAL_VEH) ) %>%
+       mutate(MES = factor(month.abb[MES], levels=month.abb[1:12])) %>% 
+       ggplot(aes(x=MES, y=total, fill=factor(MES))) +
+       theme_bw(base_size=15) +
+       geom_col() +
+       geom_errorbar(aes(ymin=total-sd, ymax=total+sd), width=.1) + 
+       xlab("Month") +
+       ylab("Avegere of Vehicles involved in accidents") +
+       ggtitle("Number of Vehicles involved in accidents in\nPorto Alegre 2016") +
+       theme(legend.position="bottom") + 
+       scale_fill_discrete(name = "Month")
+#+end_src
+
+#+RESULTS:
 
 *** Check Date per weekday
 
@@ -434,22 +452,17 @@ df %>% group_by(DIA_SEM) %>% summarize(total = n()) %>%
        mutate(DIA_SEM = factor(DIA_SEM, levels=c("SEGUNDA-FEIRA",
                                                  "TERCA-FEIRA",
                                                  "QUARTA-FEIRA", "QUINTA-FEIRA", "SEXTA-FEIRA", "SABADO", "DOMINGO"))) %>%
-       arrange(DIA_SEM)
+       ggplot(aes(x=DIA_SEM, y=total, fill=factor(DIA_SEM))) +
+       theme_bw(base_size=15) +
+       geom_col() +
+       xlab("Month") +
+       ylab("Avegere of Vehicles involved in accidents") +
+       ggtitle("Number of Vehicles involved in accidents in\nPorto Alegre 2016") +
+       theme(legend.position="bottom") + 
+       scale_fill_discrete(name = "Month")
 #+end_src
 
 #+RESULTS:
-#+begin_example
-# A tibble: 7 x 2
-  DIA_SEM       total
-  <fct>         <int>
-1 SEGUNDA-FEIRA  2076
-2 TERCA-FEIRA    1928
-3 QUARTA-FEIRA   2037
-4 QUINTA-FEIRA   2043
-5 SEXTA-FEIRA    2148
-6 SABADO         1361
-7 DOMINGO         922
-#+end_example
 
 *** Check Occurencies per hour
 
@@ -485,3 +498,79 @@ df %>% group_by(LOG1) %>% summarize(total = n()) %>% arrange(-total)
 10 AV JUCA BATISTA                  154
 # ... with 1,324 more rows
 #+end_example
+
+
+*** Map
+#+begin_src R :results output :session *R* :exports both
+remove.packages(ggmap)
+#+end_src
+
+#+RESULTS:
+: Error in remove.packages(ggmap) : object 'ggmap' not found
+
+#+begin_src R :results output :session *R* :exports both
+
+devtools::install_github("dkahle/ggmap", force = TRUE)
+#+end_src
+
+#+RESULTS:
+#+begin_example
+Downloading GitHub repo dkahle/ggmap@master
+from URL https://api.github.com/repos/dkahle/ggmap/zipball/master
+Installing ggmap
+'/usr/lib/R/bin/R' --no-site-file --no-environ --no-save --no-restore --quiet  \
+  CMD INSTALL '/tmp/RtmpDgONMQ/devtoolsf73399accba/dkahle-ggmap-c054613'  \
+  --library='/home/llnesi/R/x86_64-pc-linux-gnu-library/3.4' --install-tests 
+
+,* installing *source* package ‘ggmap’ ...
+,** R
+,** data
+,*** moving datasets to lazyload DB
+,** inst
+,** tests
+,** preparing package for lazy loading
+,** help
+,*** installing help indices
+,** building package indices
+,** testing if installed package can be loaded
+,* DONE (ggmap)
+#+end_example
+
+#+begin_src R :results output :session *R* :exports both
+df
+#+end_src
+
+#+RESULTS:
+#+begin_example
+# A tibble: 12,515 x 44
+       ID LONGITUDE LATITUDE LOG1  LOG2  PREDIAL1 LOCAL TIPO_ACID LOCAL_VIA
+    <int>     <dbl>    <dbl> <chr> <chr>    <int> <chr> <chr>     <chr>    
+ 1 623243 -51233864  -3.01e7 R AR… R CO…        0 Cruz… ATROPELA… R ARAPEI…
+ 2 622413 -51231947  -3.01e7 R PA… R JO…        0 Cruz… ABALROAM… R PADRE …
+ 3 622460 -51212026  -3.00e7 AV D… <NA>         0 Logr… ATROPELA… AV DO LA…
+ 4 622540 -51185614  -3.00e7 AV D… R CA…        0 Cruz… CHOQUE    AV DR NI…
+ 5 622181 -51097360  -3.01e7 ESTR… <NA>      8487 Logr… CHOQUE    8487 EST…
+ 6 622232 -51225022  -3.00e7 AV I… <NA>       320 Logr… COLISAO   320 AV I…
+ 7 622414 -51221523  -3.01e7 R JO… <NA>       965 Logr… COLISAO   965 R JO…
+ 8 622186 -51218406  -3.00e7 AV E… <NA>       240 Logr… ABALROAM… 240 AV E…
+ 9 622235 -51215827  -3.00e7 R GE… <NA>      1445 Logr… COLISAO   1445 R G…
+10 622185 -51200627  -3.00e7 AV E… <NA>         0 Logr… QUEDA     AV EDVAL…
+# ... with 12,505 more rows, and 35 more variables: QUEDA_ARR <int>,
+#   DATA <date>, DATA_HORA <dttm>, DIA_SEM <chr>, HORA <time>, FERIDOS <int>,
+#   FERIDOS_GR <int>, MORTES <int>, MORTE_POST <int>, FATAIS <int>, AUTO <int>,
+#   TAXI <int>, LOTACAO <int>, ONIBUS_URB <int>, ONIBUS_MET <int>,
+#   ONIBUS_INT <int>, CAMINHAO <int>, MOTO <int>, CARROCA <int>,
+#   BICICLETA <int>, OUTRO <int>, TEMPO <chr>, NOITE_DIA <chr>, FONTE <chr>,
+#   BOLETIM <chr>, REGIAO <chr>, DIA <int>, MES <int>, ANO <int>,
+#   FX_HORA <int>, CONT_ACID <int>, CONT_VIT <int>, UPS <int>, CONSORCIO <chr>,
+#   CORREDOR <int>
+#+end_example
+
+#+begin_src R :results output :session *R* :exports both
+library(tidyverse)
+library(ggmap)
+
+ggmap::get_stamenmap(bbox = c(left = -51.3, bottom = -30.15, right = -51.0, top = -29.9), zoom = 12, maptype = c("terrain") ) %>% ggmap()
+#+end_src
+
+#+RESULTS:
