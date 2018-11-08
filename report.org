@@ -1,0 +1,160 @@
+#+TITLE: Literate Programming
+#+AUTHOR: Lucas Nesi
+#+STARTUP: overview indent
+#+TAGS: noexport(n) deprecated(d)
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+#+SEQ_TODO: TODO(t!) STARTED(s!) WAITING(w!) | DONE(d!) CANCELLED(c!) DEFERRED(f!)
+
+
+* Loading Libraries and Data
+#+begin_src shell :results output :exports both
+wget http://datapoa.com.br/storage/f/2017-08-03T13%3A19%3A45.538Z/acidentes-2016.csv
+#+end_src
+
+#+begin_src R :results output :session *R* :exports both
+options(crayon.enabled = FALSE)
+library(tidyverse)
+#+end_src
+
+#+RESULTS:
+
+#+begin_src R :results output :session *R* :exports both
+df <- read_delim (file = "acidentes-2016.csv",  delim=";",
+                 locale=locale(decimal_mark = ".", grouping_mark = ","), 
+                 col_types = list(
+  .default = col_integer(),
+  LONGITUDE = col_double(),
+  LATITUDE = col_double(),
+  LOG1 = col_character(),
+  LOG2 = col_character(),
+  LOCAL = col_character(),
+  TIPO_ACID = col_character(),
+  LOCAL_VIA = col_character(),
+  DATA = col_date(format = ""),
+  DATA_HORA = col_datetime(format = ""),
+  DIA_SEM = col_character(),
+  HORA = col_time(format = ""),
+  TEMPO = col_character(),
+  NOITE_DIA = col_character(),
+  FONTE = col_character(),
+  BOLETIM = col_character(),
+  REGIAO = col_character(),
+  CONSORCIO = col_character()
+) )
+
+#+end_src
+
+#+RESULTS:
+
+* Is there a time of the year with more accidents?
+
+#+begin_src R :results output graphics :file "question1.png" :exports both :width 600 :height 400 :session *R* 
+df %>% group_by(MES) %>%
+       summarize(total = n()) %>%
+       mutate(MES = factor(month.abb[MES], levels=month.abb[1:12])) %>% 
+       ggplot(aes(x=MES, y=total, fill=factor(MES))) +
+       theme_bw(base_size=15) +
+       geom_col() +
+       xlab("Month") +
+       ylab("Total Number of Accidents") +
+       ggtitle("Total number of Accidents in Porto Alegre 2016") +
+       theme(legend.position="bottom") + 
+       scale_fill_discrete(name = "Month")
+#+end_src
+
+#+RESULTS:
+[[file:question1.png]]
+
+
+
+* How many vehicles are usually involved?
+
+#+begin_src R :results output graphics :file "question2.png" :exports both :width 600 :height 400 :session *R* 
+df %>% group_by(MES) %>%
+       mutate(TOTAL_VEH = AUTO + TAXI + LOTACAO + 
+                          ONIBUS_URB + ONIBUS_MET + 
+                          ONIBUS_INT + CAMINHAO + MOTO +
+                          CARROCA + BICICLETA + OUTRO) %>%
+       summarize(total = mean(TOTAL_VEH), sd=sd(TOTAL_VEH) ) %>%
+       mutate(MES = factor(month.abb[MES], levels=month.abb[1:12])) %>% 
+       ggplot(aes(x=MES, y=total, fill=factor(MES))) +
+       theme_bw(base_size=15) +
+       geom_col() +
+       geom_errorbar(aes(ymin=total-sd, ymax=total+sd), width=.1) + 
+       xlab("Month") +
+       ylab("Avegere of Vehicles involved in accidents") +
+       ggtitle("Number of Vehicles involved in accidents on Porto Alegre 2016") +
+       theme(legend.position="bottom") + 
+       scale_fill_discrete(name = "Month")
+#+end_src
+
+#+RESULTS:
+[[file:question2.png]]
+
+* Check Date per weekday
+
+#+begin_src R :results output graphics :file "question3.png" :exports both :width 600 :height 400 :session *R* 
+
+df$DIA_SEM <- df$DIA_SEM %>% str_replace_all(c("SEGUNDA-FEIRA" = "Monday",
+                  "TERCA-FEIRA" = "Tuesday",
+                  "QUARTA-FEIRA" = "Wednesday",
+                  "QUINTA-FEIRA" = "Thursday",
+                  "SEXTA-FEIRA" = "Friday",
+                  "SABADO" = "Saturday",
+                  "DOMINGO" = "Sunday"))
+
+df %>% group_by(DIA_SEM) %>% summarize(total = n()) %>%
+       mutate(DIA_SEM = factor(DIA_SEM, levels=c("Monday",
+                                                 "Tuesday",
+                                                 "Wednesday",
+                                                 "Thursday",
+                                                 "Friday",
+                                                 "Saturday",
+                                                 "Sunday"))) %>%
+       ggplot(aes(x=DIA_SEM, y=total, fill=factor(DIA_SEM))) +
+       theme_bw(base_size=15) +
+       geom_col() +
+       xlab("Month") +
+       ylab("Avegere of Vehicles involved in accidents") +
+       ggtitle("Number of Vehicles involved in accidents on Porto Alegre 2016") +
+       theme(legend.position="bottom") + 
+       scale_fill_discrete(name = "Month")
+#+end_src
+
+#+RESULTS:
+[[file:/tmp/babel-28511kDD/question328511tim.png]]
+
+
+* Advanced: are there some area in POA with more accidents?
+#+begin_src R :results output :session *R* :exports both
+devtools::install_github("dkahle/ggmap", force = TRUE)
+#+end_src
+
+#+begin_src R :results output graphics :file "question4.png" :exports both :width 600 :height 540 :session *R* 
+library(ggmap)
+data_map <- df %>% select(LONGITUDE, LATITUDE) %>% 
+                   filter(LONGITUDE > -51.28, 
+                          LONGITUDE < -51.12,
+                          LATITUDE > -30.1,
+                          LATITUDE < -29.9)
+
+data_map$LATITUDE <- data_map$LATITUDE-0.001
+
+qmplot(LONGITUDE, LATITUDE, data = data_map, geom = "blank", 
+       maptype = "terrain", 
+       #source = "osm",
+       darken = .4, legend = "topleft",
+       zoom=13,
+       main="Number of Accidents HeatMap over Porto Alegre Map 2016") +
+stat_density_2d(aes(fill = ..level..), geom = "polygon", alpha = .3, color = NA, n=300, h=c(0.003,0.003)) +
+scale_fill_gradient2("Number of Accidents", low = "white", 
+                     mid = "yellow", high = "red", breaks=c(400,600,800,1000,1200,1400)) +
+theme_bw(base_size=14) +
+theme(legend.position="bottom") + 
+guides(fill = guide_colourbar(barwidth = 18, barheight = 1, title.position="top")) +
+ylab("Latitude") + xlab("Longitude")
+#+end_src
+
+#+RESULTS:
+[[file:question4.png]]
