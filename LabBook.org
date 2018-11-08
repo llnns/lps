@@ -338,19 +338,22 @@ options(crayon.enabled = FALSE)
 #+end_src
 
 #+RESULTS:
+: ── [1mAttaching packages[22m ─────────────────────────────────────── tidyverse 1.2.1 ──
+: [32m✔[39m [34mggplot2[39m 3.1.0     [32m✔[39m [34mpurrr  [39m 0.2.5
+: [32m✔[39m [34mtibble [39m 1.4.2     [32m✔[39m [34mdplyr  [39m 0.7.7
+: [32m✔[39m [34mtidyr  [39m 0.8.1     [32m✔[39m [34mstringr[39m 1.3.1
+: [32m✔[39m [34mreadr  [39m 1.1.1     [32m✔[39m [34mforcats[39m 0.3.0
+: ── [1mConflicts[22m ────────────────────────────────────────── tidyverse_conflicts() ──
+: [31m✖[39m [34mdplyr[39m::[32mfilter()[39m masks [34mstats[39m::filter()
+: [31m✖[39m [34mdplyr[39m::[32mlag()[39m    masks [34mstats[39m::lag()
 
 #+begin_src R :results output :session *R* :exports both
-df <- read_csv2 (file = "acidentes-2016.csv")
-#+end_src
-
-#+RESULTS:
-#+begin_example
-Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
-Parsed with column specification:
-cols(
+df <- read_delim (file = "acidentes-2016.csv",  delim=";",
+                 locale=locale(decimal_mark = ".", grouping_mark = ","), 
+                 col_types = list(
   .default = col_integer(),
-  LONGITUDE = col_number(),
-  LATITUDE = col_number(),
+  LONGITUDE = col_double(),
+  LATITUDE = col_double(),
   LOG1 = col_character(),
   LOG2 = col_character(),
   LOCAL = col_character(),
@@ -366,10 +369,12 @@ cols(
   BOLETIM = col_character(),
   REGIAO = col_character(),
   CONSORCIO = col_character()
-)
-See spec(...) for full column specifications.
-|=======                                                                 |  10%|=========                                                               |  12%|==========                                                              |  14%|===========                                                             |  16%|=============                                                           |  18%|==============                                                          |  19%|===============                                                         |  21%|=================                                                       |  23%|==================                                                      |  25%|===================                                                     |  27%|=====================                                                   |  28%|======================                                                  |  30%|=======================                                                 |  32%|=========================                                               |  34%|=======================                                         |  36%    1 MB|========================                                        |  38%    1 MB|=========================                                       |  39%    1 MB|===========================                                     |  41%    1 MB|============================                                    |  43%    1 MB|=============================                                   |  45%    1 MB|==============================                                  |  47%    1 MB|===============================                                 |  48%    1 MB|================================                                |  50%    1 MB|==================================                              |  52%    1 MB|===================================                             |  54%    1 MB|====================================                            |  56%    1 MB|=====================================                           |  57%    1 MB|======================================                          |  59%    1 MB|========================================                        |  61%    1 MB|=========================================                       |  63%    1 MB|==========================================                      |  65%    1 MB|===========================================                     |  67%    1 MB|============================================                    |  68%    1 MB|=============================================                   |  70%    2 MB|===============================================                 |  72%    2 MB|================================================                |  74%    2 MB|=================================================               |  76%    2 MB|==================================================              |  77%    2 MB|===================================================             |  79%    2 MB|=====================================================           |  81%    2 MB|======================================================          |  83%    2 MB|=======================================================         |  85%    2 MB|========================================================        |  87%    2 MB|=========================================================       |  88%    2 MB|==========================================================      |  90%    2 MB|============================================================    |  92%    2 MB|=============================================================   |  94%    2 MB|==============================================================  |  96%    2 MB|=============================================================== |  98%    2 MB|================================================================|  99%    2 MB|=================================================================| 100%    2 MB
-#+end_example
+) )
+
+#+end_src
+
+#+RESULTS:
+
 
 *** Check
 
@@ -380,18 +385,18 @@ df
 #+RESULTS:
 #+begin_example
 # A tibble: 12,515 x 44
-       ID LONGITUDE LATITUDE LOG1  LOG2  PREDIAL1 LOCAL TIPO_ACID LOCAL_VIA
-    <int>     <dbl>    <dbl> <chr> <chr>    <int> <chr> <chr>     <chr>    
- 1 623243 -51233864  -3.01e7 R AR… R CO…        0 Cruz… ATROPELA… R ARAPEI…
- 2 622413 -51231947  -3.01e7 R PA… R JO…        0 Cruz… ABALROAM… R PADRE …
- 3 622460 -51212026  -3.00e7 AV D… <NA>         0 Logr… ATROPELA… AV DO LA…
- 4 622540 -51185614  -3.00e7 AV D… R CA…        0 Cruz… CHOQUE    AV DR NI…
- 5 622181 -51097360  -3.01e7 ESTR… <NA>      8487 Logr… CHOQUE    8487 EST…
- 6 622232 -51225022  -3.00e7 AV I… <NA>       320 Logr… COLISAO   320 AV I…
- 7 622414 -51221523  -3.01e7 R JO… <NA>       965 Logr… COLISAO   965 R JO…
- 8 622186 -51218406  -3.00e7 AV E… <NA>       240 Logr… ABALROAM… 240 AV E…
- 9 622235 -51215827  -3.00e7 R GE… <NA>      1445 Logr… COLISAO   1445 R G…
-10 622185 -51200627  -3.00e7 AV E… <NA>         0 Logr… QUEDA     AV EDVAL…
+       ID LONGITUDE LATITUDE LOG1    LOG2   PREDIAL1 LOCAL TIPO_ACID LOCAL_VIA 
+    <int>     <dbl>    <dbl> <chr>   <chr>     <int> <chr> <chr>     <chr>     
+ 1 623243     -51.2    -30.1 R ARAP… R COM…        0 Cruz… ATROPELA… R ARAPEI …
+ 2 622413     -51.2    -30.1 R PADR… R JOA…        0 Cruz… ABALROAM… R PADRE J…
+ 3 622460     -51.2    -30.0 AV DO … <NA>          0 Logr… ATROPELA… AV DO LAMI
+ 4 622540     -51.2    -30.0 AV DR … R CAR…        0 Cruz… CHOQUE    AV DR NIL…
+ 5 622181     -51.1    -30.1 ESTR J… <NA>       8487 Logr… CHOQUE    8487 ESTR…
+ 6 622232     -51.2    -30.0 AV IPI… <NA>        320 Logr… COLISAO   320 AV IP…
+ 7 622414     -51.2    -30.1 R JOSE… <NA>        965 Logr… COLISAO   965 R JOS…
+ 8 622186     -51.2    -30.0 AV ERI… <NA>        240 Logr… ABALROAM… 240 AV ER…
+ 9 622235     -51.2    -30.0 R GEN … <NA>       1445 Logr… COLISAO   1445 R GE…
+10 622185     -51.2    -30.0 AV EDV… <NA>          0 Logr… QUEDA     AV EDVALD…
 # ... with 12,505 more rows, and 35 more variables: QUEDA_ARR <int>,
 #   DATA <date>, DATA_HORA <dttm>, DIA_SEM <chr>, HORA <time>, FERIDOS <int>,
 #   FERIDOS_GR <int>, MORTES <int>, MORTE_POST <int>, FATAIS <int>, AUTO <int>,
@@ -517,9 +522,1781 @@ devtools::install_github("dkahle/ggmap", force = TRUE)
 Downloading GitHub repo dkahle/ggmap@master
 from URL https://api.github.com/repos/dkahle/ggmap/zipball/master
 Installing ggmap
+trying URL 'https://cloud.r-project.org/src/contrib/bitops_1.0-6.tar.gz'
+Content type 'application/x-gzip' length 8734 bytes
+==================================================
+downloaded 8734 bytes
+
+Installing bitops
 '/usr/lib/R/bin/R' --no-site-file --no-environ --no-save --no-restore --quiet  \
-  CMD INSTALL '/tmp/RtmpDgONMQ/devtoolsf73399accba/dkahle-ggmap-c054613'  \
-  --library='/home/llnesi/R/x86_64-pc-linux-gnu-library/3.4' --install-tests 
+  CMD INSTALL '/tmp/Rtmpit0sUm/devtools1aa2180aefda/bitops'  \
+  --library='/home/llnn/R/x86_64-pc-linux-gnu-library/3.4' --install-tests 
+
+,* installing *source* package ‘bitops’ ...
+,** package ‘bitops’ successfully unpacked and MD5 sums checked
+,** libs
+gcc -std=gnu99 -I/usr/share/R/include -DNDEBUG      -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c bit-ops.c -o bit-ops.o
+gcc -std=gnu99 -I/usr/share/R/include -DNDEBUG      -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c cksum.c -o cksum.o
+g++ -shared -L/usr/lib/R/lib -Wl,-Bsymbolic-functions -Wl,-z,relro -o bitops.so bit-ops.o cksum.o -L/usr/lib/R/lib -lR
+installing to /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/bitops/libs
+,** R
+,** tests
+,** preparing package for lazy loading
+,** help
+,*** installing help indices
+,** building package indices
+,** testing if installed package can be loaded
+,* DONE (bitops)
+trying URL 'https://cloud.r-project.org/src/contrib/digest_0.6.18.tar.gz'
+Content type 'application/x-gzip' length 128553 bytes (125 KB)
+==================================================
+downloaded 125 KB
+
+Installing digest
+'/usr/lib/R/bin/R' --no-site-file --no-environ --no-save --no-restore --quiet  \
+  CMD INSTALL '/tmp/Rtmpit0sUm/devtools1aa27c728a56/digest'  \
+  --library='/home/llnn/R/x86_64-pc-linux-gnu-library/3.4' --install-tests 
+
+,* installing *source* package ‘digest’ ...
+,** package ‘digest’ successfully unpacked and MD5 sums checked
+,** libs
+gcc -std=gnu99 -I/usr/share/R/include -DNDEBUG      -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c aes.c -o aes.o
+gcc -std=gnu99 -I/usr/share/R/include -DNDEBUG      -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c crc32.c -o crc32.o
+gcc -std=gnu99 -I/usr/share/R/include -DNDEBUG      -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c digest.c -o digest.o
+gcc -std=gnu99 -I/usr/share/R/include -DNDEBUG      -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c init.c -o init.o
+gcc -std=gnu99 -I/usr/share/R/include -DNDEBUG      -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c md5.c -o md5.o
+gcc -std=gnu99 -I/usr/share/R/include -DNDEBUG      -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c pmurhash.c -o pmurhash.o
+gcc -std=gnu99 -I/usr/share/R/include -DNDEBUG      -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c raes.c -o raes.o
+gcc -std=gnu99 -I/usr/share/R/include -DNDEBUG      -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c sha1.c -o sha1.o
+gcc -std=gnu99 -I/usr/share/R/include -DNDEBUG      -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c sha2.c -o sha2.o
+gcc -std=gnu99 -I/usr/share/R/include -DNDEBUG      -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c sha256.c -o sha256.o
+gcc -std=gnu99 -I/usr/share/R/include -DNDEBUG      -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c xxhash.c -o xxhash.o
+g++ -shared -L/usr/lib/R/lib -Wl,-Bsymbolic-functions -Wl,-z,relro -o digest.so aes.o crc32.o digest.o init.o md5.o pmurhash.o raes.o sha1.o sha2.o sha256.o xxhash.o -L/usr/lib/R/lib -lR
+installing to /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/digest/libs
+,** R
+,** inst
+,** tests
+,** preparing package for lazy loading
+,** help
+,*** installing help indices
+,** building package indices
+,** installing vignettes
+,** testing if installed package can be loaded
+,* DONE (digest)
+trying URL 'https://cloud.r-project.org/src/contrib/dplyr_0.7.7.tar.gz'
+Content type 'application/x-gzip' length 723598 bytes (706 KB)
+==================================================
+downloaded 706 KB
+
+Installing dplyr
+trying URL 'https://cloud.r-project.org/src/contrib/pkgconfig_2.0.2.tar.gz'
+Content type 'application/x-gzip' length 6024 bytes
+==================================================
+downloaded 6024 bytes
+
+Installing pkgconfig
+'/usr/lib/R/bin/R' --no-site-file --no-environ --no-save --no-restore --quiet  \
+  CMD INSTALL '/tmp/Rtmpit0sUm/devtools1aa2657e9047/pkgconfig'  \
+  --library='/home/llnn/R/x86_64-pc-linux-gnu-library/3.4' --install-tests 
+
+,* installing *source* package ‘pkgconfig’ ...
+,** package ‘pkgconfig’ successfully unpacked and MD5 sums checked
+,** R
+,** inst
+,** tests
+,** preparing package for lazy loading
+,** help
+,*** installing help indices
+,** building package indices
+,** testing if installed package can be loaded
+,* DONE (pkgconfig)
+trying URL 'https://cloud.r-project.org/src/contrib/R6_2.3.0.tar.gz'
+Content type 'application/x-gzip' length 30968 bytes (30 KB)
+==================================================
+downloaded 30 KB
+
+Installing R6
+'/usr/lib/R/bin/R' --no-site-file --no-environ --no-save --no-restore --quiet  \
+  CMD INSTALL '/tmp/Rtmpit0sUm/devtools1aa2692cdb65/R6'  \
+  --library='/home/llnn/R/x86_64-pc-linux-gnu-library/3.4' --install-tests 
+
+,* installing *source* package ‘R6’ ...
+,** package ‘R6’ successfully unpacked and MD5 sums checked
+,** R
+,** tests
+,** preparing package for lazy loading
+,** help
+,*** installing help indices
+,** building package indices
+,** testing if installed package can be loaded
+,* DONE (R6)
+trying URL 'https://cloud.r-project.org/src/contrib/rlang_0.3.0.1.tar.gz'
+Content type 'application/x-gzip' length 817008 bytes (797 KB)
+==================================================
+downloaded 797 KB
+
+Installing rlang
+'/usr/lib/R/bin/R' --no-site-file --no-environ --no-save --no-restore --quiet  \
+  CMD INSTALL '/tmp/Rtmpit0sUm/devtools1aa221a77c85/rlang'  \
+  --library='/home/llnn/R/x86_64-pc-linux-gnu-library/3.4' --install-tests 
+
+,* installing *source* package ‘rlang’ ...
+,** package ‘rlang’ successfully unpacked and MD5 sums checked
+,** libs
+gcc -std=gnu99 -I/usr/share/R/include -DNDEBUG -I./lib/     -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c capture.c -o capture.o
+gcc -std=gnu99 -I/usr/share/R/include -DNDEBUG -I./lib/     -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c export.c -o export.o
+gcc -std=gnu99 -I/usr/share/R/include -DNDEBUG -I./lib/     -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c internal.c -o internal.o
+gcc -std=gnu99 -I/usr/share/R/include -DNDEBUG -I./lib/     -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c lib.c -o lib.o
+g++ -shared -L/usr/lib/R/lib -Wl,-Bsymbolic-functions -Wl,-z,relro -o rlang.so capture.o export.o internal.o lib.o -L/usr/lib/R/lib -lR
+installing to /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/rlang/libs
+,** R
+,** tests
+,** byte-compile and prepare package for lazy loading
+,** help
+,*** installing help indices
+,*** copying figures
+,** building package indices
+,** testing if installed package can be loaded
+,* DONE (rlang)
+trying URL 'https://cloud.r-project.org/src/contrib/tidyselect_0.2.5.tar.gz'
+Content type 'application/x-gzip' length 21883 bytes (21 KB)
+==================================================
+downloaded 21 KB
+
+Installing tidyselect
+'/usr/lib/R/bin/R' --no-site-file --no-environ --no-save --no-restore --quiet  \
+  CMD INSTALL '/tmp/Rtmpit0sUm/devtools1aa216cb81c8/tidyselect'  \
+  --library='/home/llnn/R/x86_64-pc-linux-gnu-library/3.4' --install-tests 
+
+,* installing *source* package ‘tidyselect’ ...
+,** package ‘tidyselect’ successfully unpacked and MD5 sums checked
+,** libs
+g++  -I/usr/share/R/include -DNDEBUG  -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include"    -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c RcppExports.cpp -o RcppExports.o
+g++  -I/usr/share/R/include -DNDEBUG  -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include"    -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c combine_variables.cpp -o combine_variables.o
+g++ -shared -L/usr/lib/R/lib -Wl,-Bsymbolic-functions -Wl,-z,relro -o tidyselect.so RcppExports.o combine_variables.o -L/usr/lib/R/lib -lR
+installing to /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/tidyselect/libs
+,** R
+,** tests
+,** byte-compile and prepare package for lazy loading
+,** help
+,*** installing help indices
+,** building package indices
+,** testing if installed package can be loaded
+,* DONE (tidyselect)
+'/usr/lib/R/bin/R' --no-site-file --no-environ --no-save --no-restore --quiet  \
+  CMD INSTALL '/tmp/Rtmpit0sUm/devtools1aa268d800d0/dplyr'  \
+  --library='/home/llnn/R/x86_64-pc-linux-gnu-library/3.4' --install-tests 
+
+,* installing *source* package ‘dplyr’ ...
+,** package ‘dplyr’ successfully unpacked and MD5 sums checked
+,** libs
+g++  -I/usr/share/R/include -DNDEBUG -I../inst/include -DCOMPILING_DPLYR -DBOOST_NO_INT64_T -DBOOST_NO_INTEGRAL_INT64_T -DBOOST_NO_LONG_LONG -DRCPP_USING_UTF8_ERROR_STRING -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/bindrcpp/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/plogr/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include"    -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c RcppExports.cpp -o RcppExports.o
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:28:0,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17,
+                 from ../inst/include/dplyr/MultipleVectorVisitors.h:4,
+                 from ../inst/include/dplyr/dplyr.h:16,
+                 from ../inst/include/dplyr.h:8,
+                 from RcppExports.cpp:4:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/detail/shared_count.hpp:355:33: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     explicit shared_count( std::auto_ptr<Y> & r ): pi_( new sp_counted_impl_p<Y>( r.get() ) )
+                                 ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from ../inst/include/dplyr/main.h:4,
+                 from ../inst/include/dplyr.h:4,
+                 from RcppExports.cpp:4:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/MultipleVectorVisitors.h:4,
+                 from ../inst/include/dplyr/dplyr.h:16,
+                 from ../inst/include/dplyr.h:8,
+                 from RcppExports.cpp:4:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:256:65: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+ template< class T, class R > struct sp_enable_if_auto_ptr< std::auto_ptr< T >, R >
+                                                                 ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from ../inst/include/dplyr/main.h:4,
+                 from ../inst/include/dplyr.h:4,
+                 from RcppExports.cpp:4:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/MultipleVectorVisitors.h:4,
+                 from ../inst/include/dplyr/dplyr.h:16,
+                 from ../inst/include/dplyr.h:8,
+                 from RcppExports.cpp:4:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:471:31: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     explicit shared_ptr( std::auto_ptr<Y> & r ): px(r.get()), pn()
+                               ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from ../inst/include/dplyr/main.h:4,
+                 from ../inst/include/dplyr.h:4,
+                 from RcppExports.cpp:4:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/MultipleVectorVisitors.h:4,
+                 from ../inst/include/dplyr/dplyr.h:16,
+                 from ../inst/include/dplyr.h:8,
+                 from RcppExports.cpp:4:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:484:22: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     shared_ptr( std::auto_ptr<Y> && r ): px(r.get()), pn()
+                      ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from ../inst/include/dplyr/main.h:4,
+                 from ../inst/include/dplyr.h:4,
+                 from RcppExports.cpp:4:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/MultipleVectorVisitors.h:4,
+                 from ../inst/include/dplyr/dplyr.h:16,
+                 from ../inst/include/dplyr.h:8,
+                 from RcppExports.cpp:4:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:567:34: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     shared_ptr & operator=( std::auto_ptr<Y> & r )
+                                  ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from ../inst/include/dplyr/main.h:4,
+                 from ../inst/include/dplyr.h:4,
+                 from RcppExports.cpp:4:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/MultipleVectorVisitors.h:4,
+                 from ../inst/include/dplyr/dplyr.h:16,
+                 from ../inst/include/dplyr.h:8,
+                 from RcppExports.cpp:4:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:576:34: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     shared_ptr & operator=( std::auto_ptr<Y> && r )
+                                  ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from ../inst/include/dplyr/main.h:4,
+                 from ../inst/include/dplyr.h:4,
+                 from RcppExports.cpp:4:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/MultipleVectorVisitors.h:4,
+                 from ../inst/include/dplyr/dplyr.h:16,
+                 from ../inst/include/dplyr.h:8,
+                 from RcppExports.cpp:4:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp: In member function ‘boost::shared_ptr<T>& boost::shared_ptr<T>::operator=(std::auto_ptr<_Up>&&)’:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:578:38: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+         this_type( static_cast< std::auto_ptr<Y> && >( r ) ).swap( *this );
+                                      ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from ../inst/include/dplyr/main.h:4,
+                 from ../inst/include/dplyr.h:4,
+                 from RcppExports.cpp:4:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/scoped_ptr.hpp:13:0,
+                 from ../inst/include/dplyr/Result/CallbackProcessor.h:4,
+                 from ../inst/include/dplyr/Result/all.h:19,
+                 from ../inst/include/dplyr/dplyr.h:29,
+                 from ../inst/include/dplyr.h:8,
+                 from RcppExports.cpp:4:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/scoped_ptr.hpp: At global scope:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/scoped_ptr.hpp:74:31: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     explicit scoped_ptr( std::auto_ptr<T> p ) BOOST_SP_NOEXCEPT : px( p.release() )
+                               ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from ../inst/include/dplyr/main.h:4,
+                 from ../inst/include/dplyr.h:4,
+                 from RcppExports.cpp:4:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+g++  -I/usr/share/R/include -DNDEBUG -I../inst/include -DCOMPILING_DPLYR -DBOOST_NO_INT64_T -DBOOST_NO_INTEGRAL_INT64_T -DBOOST_NO_LONG_LONG -DRCPP_USING_UTF8_ERROR_STRING -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/bindrcpp/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/plogr/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include"    -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c address.cpp -o address.o
+g++  -I/usr/share/R/include -DNDEBUG -I../inst/include -DCOMPILING_DPLYR -DBOOST_NO_INT64_T -DBOOST_NO_INTEGRAL_INT64_T -DBOOST_NO_LONG_LONG -DRCPP_USING_UTF8_ERROR_STRING -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/bindrcpp/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/plogr/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include"    -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c api.cpp -o api.o
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/scoped_ptr.hpp:13:0,
+                 from api.cpp:4:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/scoped_ptr.hpp:74:31: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     explicit scoped_ptr( std::auto_ptr<T> p ) BOOST_SP_NOEXCEPT : px( p.release() )
+                               ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from api.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+g++  -I/usr/share/R/include -DNDEBUG -I../inst/include -DCOMPILING_DPLYR -DBOOST_NO_INT64_T -DBOOST_NO_INTEGRAL_INT64_T -DBOOST_NO_LONG_LONG -DRCPP_USING_UTF8_ERROR_STRING -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/bindrcpp/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/plogr/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include"    -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c arrange.cpp -o arrange.o
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/scoped_ptr.hpp:13:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:4,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from ../inst/include/dplyr/Result/CallProxy.h:4,
+                 from arrange.cpp:12:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/scoped_ptr.hpp:74:31: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     explicit scoped_ptr( std::auto_ptr<T> p ) BOOST_SP_NOEXCEPT : px( p.release() )
+                               ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from arrange.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:28:0,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from ../inst/include/dplyr/Result/CallProxy.h:4,
+                 from arrange.cpp:12:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/detail/shared_count.hpp:355:33: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     explicit shared_count( std::auto_ptr<Y> & r ): pi_( new sp_counted_impl_p<Y>( r.get() ) )
+                                 ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from arrange.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from ../inst/include/dplyr/Result/CallProxy.h:4,
+                 from arrange.cpp:12:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:256:65: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+ template< class T, class R > struct sp_enable_if_auto_ptr< std::auto_ptr< T >, R >
+                                                                 ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from arrange.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from ../inst/include/dplyr/Result/CallProxy.h:4,
+                 from arrange.cpp:12:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:471:31: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     explicit shared_ptr( std::auto_ptr<Y> & r ): px(r.get()), pn()
+                               ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from arrange.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from ../inst/include/dplyr/Result/CallProxy.h:4,
+                 from arrange.cpp:12:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:484:22: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     shared_ptr( std::auto_ptr<Y> && r ): px(r.get()), pn()
+                      ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from arrange.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from ../inst/include/dplyr/Result/CallProxy.h:4,
+                 from arrange.cpp:12:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:567:34: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     shared_ptr & operator=( std::auto_ptr<Y> & r )
+                                  ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from arrange.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from ../inst/include/dplyr/Result/CallProxy.h:4,
+                 from arrange.cpp:12:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:576:34: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     shared_ptr & operator=( std::auto_ptr<Y> && r )
+                                  ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from arrange.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from ../inst/include/dplyr/Result/CallProxy.h:4,
+                 from arrange.cpp:12:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp: In member function ‘boost::shared_ptr<T>& boost::shared_ptr<T>::operator=(std::auto_ptr<_Up>&&)’:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:578:38: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+         this_type( static_cast< std::auto_ptr<Y> && >( r ) ).swap( *this );
+                                      ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from arrange.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+g++  -I/usr/share/R/include -DNDEBUG -I../inst/include -DCOMPILING_DPLYR -DBOOST_NO_INT64_T -DBOOST_NO_INTEGRAL_INT64_T -DBOOST_NO_LONG_LONG -DRCPP_USING_UTF8_ERROR_STRING -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/bindrcpp/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/plogr/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include"    -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c between.cpp -o between.o
+g++  -I/usr/share/R/include -DNDEBUG -I../inst/include -DCOMPILING_DPLYR -DBOOST_NO_INT64_T -DBOOST_NO_INTEGRAL_INT64_T -DBOOST_NO_LONG_LONG -DRCPP_USING_UTF8_ERROR_STRING -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/bindrcpp/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/plogr/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include"    -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c bind.cpp -o bind.o
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/scoped_ptr.hpp:13:0,
+                 from bind.cpp:4:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/scoped_ptr.hpp:74:31: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     explicit scoped_ptr( std::auto_ptr<T> p ) BOOST_SP_NOEXCEPT : px( p.release() )
+                               ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from bind.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+g++  -I/usr/share/R/include -DNDEBUG -I../inst/include -DCOMPILING_DPLYR -DBOOST_NO_INT64_T -DBOOST_NO_INTEGRAL_INT64_T -DBOOST_NO_LONG_LONG -DRCPP_USING_UTF8_ERROR_STRING -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/bindrcpp/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/plogr/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include"    -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c combine_variables.cpp -o combine_variables.o
+g++  -I/usr/share/R/include -DNDEBUG -I../inst/include -DCOMPILING_DPLYR -DBOOST_NO_INT64_T -DBOOST_NO_INTEGRAL_INT64_T -DBOOST_NO_LONG_LONG -DRCPP_USING_UTF8_ERROR_STRING -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/bindrcpp/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/plogr/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include"    -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c distinct.cpp -o distinct.o
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:28:0,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17,
+                 from ../inst/include/dplyr/MultipleVectorVisitors.h:4,
+                 from distinct.cpp:7:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/detail/shared_count.hpp:355:33: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     explicit shared_count( std::auto_ptr<Y> & r ): pi_( new sp_counted_impl_p<Y>( r.get() ) )
+                                 ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from distinct.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/MultipleVectorVisitors.h:4,
+                 from distinct.cpp:7:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:256:65: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+ template< class T, class R > struct sp_enable_if_auto_ptr< std::auto_ptr< T >, R >
+                                                                 ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from distinct.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/MultipleVectorVisitors.h:4,
+                 from distinct.cpp:7:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:471:31: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     explicit shared_ptr( std::auto_ptr<Y> & r ): px(r.get()), pn()
+                               ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from distinct.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/MultipleVectorVisitors.h:4,
+                 from distinct.cpp:7:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:484:22: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     shared_ptr( std::auto_ptr<Y> && r ): px(r.get()), pn()
+                      ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from distinct.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/MultipleVectorVisitors.h:4,
+                 from distinct.cpp:7:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:567:34: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     shared_ptr & operator=( std::auto_ptr<Y> & r )
+                                  ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from distinct.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/MultipleVectorVisitors.h:4,
+                 from distinct.cpp:7:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:576:34: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     shared_ptr & operator=( std::auto_ptr<Y> && r )
+                                  ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from distinct.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/MultipleVectorVisitors.h:4,
+                 from distinct.cpp:7:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp: In member function ‘boost::shared_ptr<T>& boost::shared_ptr<T>::operator=(std::auto_ptr<_Up>&&)’:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:578:38: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+         this_type( static_cast< std::auto_ptr<Y> && >( r ) ).swap( *this );
+                                      ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from distinct.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+g++  -I/usr/share/R/include -DNDEBUG -I../inst/include -DCOMPILING_DPLYR -DBOOST_NO_INT64_T -DBOOST_NO_INTEGRAL_INT64_T -DBOOST_NO_LONG_LONG -DRCPP_USING_UTF8_ERROR_STRING -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/bindrcpp/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/plogr/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include"    -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c encoding.cpp -o encoding.o
+g++  -I/usr/share/R/include -DNDEBUG -I../inst/include -DCOMPILING_DPLYR -DBOOST_NO_INT64_T -DBOOST_NO_INTEGRAL_INT64_T -DBOOST_NO_LONG_LONG -DRCPP_USING_UTF8_ERROR_STRING -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/bindrcpp/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/plogr/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include"    -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c filter.cpp -o filter.o
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/scoped_ptr.hpp:13:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:4,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from filter.cpp:12:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/scoped_ptr.hpp:74:31: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     explicit scoped_ptr( std::auto_ptr<T> p ) BOOST_SP_NOEXCEPT : px( p.release() )
+                               ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from filter.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:28:0,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from filter.cpp:12:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/detail/shared_count.hpp:355:33: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     explicit shared_count( std::auto_ptr<Y> & r ): pi_( new sp_counted_impl_p<Y>( r.get() ) )
+                                 ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from filter.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from filter.cpp:12:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:256:65: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+ template< class T, class R > struct sp_enable_if_auto_ptr< std::auto_ptr< T >, R >
+                                                                 ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from filter.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from filter.cpp:12:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:471:31: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     explicit shared_ptr( std::auto_ptr<Y> & r ): px(r.get()), pn()
+                               ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from filter.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from filter.cpp:12:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:484:22: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     shared_ptr( std::auto_ptr<Y> && r ): px(r.get()), pn()
+                      ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from filter.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from filter.cpp:12:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:567:34: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     shared_ptr & operator=( std::auto_ptr<Y> & r )
+                                  ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from filter.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from filter.cpp:12:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:576:34: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     shared_ptr & operator=( std::auto_ptr<Y> && r )
+                                  ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from filter.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from filter.cpp:12:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp: In member function ‘boost::shared_ptr<T>& boost::shared_ptr<T>::operator=(std::auto_ptr<_Up>&&)’:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:578:38: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+         this_type( static_cast< std::auto_ptr<Y> && >( r ) ).swap( *this );
+                                      ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from filter.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+g++  -I/usr/share/R/include -DNDEBUG -I../inst/include -DCOMPILING_DPLYR -DBOOST_NO_INT64_T -DBOOST_NO_INTEGRAL_INT64_T -DBOOST_NO_LONG_LONG -DRCPP_USING_UTF8_ERROR_STRING -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/bindrcpp/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/plogr/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include"    -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c group_by.cpp -o group_by.o
+g++  -I/usr/share/R/include -DNDEBUG -I../inst/include -DCOMPILING_DPLYR -DBOOST_NO_INT64_T -DBOOST_NO_INTEGRAL_INT64_T -DBOOST_NO_LONG_LONG -DRCPP_USING_UTF8_ERROR_STRING -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/bindrcpp/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/plogr/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include"    -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c group_indices.cpp -o group_indices.o
+g++  -I/usr/share/R/include -DNDEBUG -I../inst/include -DCOMPILING_DPLYR -DBOOST_NO_INT64_T -DBOOST_NO_INTEGRAL_INT64_T -DBOOST_NO_LONG_LONG -DRCPP_USING_UTF8_ERROR_STRING -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/bindrcpp/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/plogr/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include"    -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c hybrid.cpp -o hybrid.o
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/scoped_ptr.hpp:13:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:4,
+                 from hybrid.cpp:12:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/scoped_ptr.hpp:74:31: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     explicit scoped_ptr( std::auto_ptr<T> p ) BOOST_SP_NOEXCEPT : px( p.release() )
+                               ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from hybrid.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:28:0,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from hybrid.cpp:12:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/detail/shared_count.hpp:355:33: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     explicit shared_count( std::auto_ptr<Y> & r ): pi_( new sp_counted_impl_p<Y>( r.get() ) )
+                                 ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from hybrid.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from hybrid.cpp:12:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:256:65: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+ template< class T, class R > struct sp_enable_if_auto_ptr< std::auto_ptr< T >, R >
+                                                                 ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from hybrid.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from hybrid.cpp:12:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:471:31: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     explicit shared_ptr( std::auto_ptr<Y> & r ): px(r.get()), pn()
+                               ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from hybrid.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from hybrid.cpp:12:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:484:22: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     shared_ptr( std::auto_ptr<Y> && r ): px(r.get()), pn()
+                      ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from hybrid.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from hybrid.cpp:12:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:567:34: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     shared_ptr & operator=( std::auto_ptr<Y> & r )
+                                  ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from hybrid.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from hybrid.cpp:12:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:576:34: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     shared_ptr & operator=( std::auto_ptr<Y> && r )
+                                  ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from hybrid.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from hybrid.cpp:12:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp: In member function ‘boost::shared_ptr<T>& boost::shared_ptr<T>::operator=(std::auto_ptr<_Up>&&)’:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:578:38: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+         this_type( static_cast< std::auto_ptr<Y> && >( r ) ).swap( *this );
+                                      ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from hybrid.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+g++  -I/usr/share/R/include -DNDEBUG -I../inst/include -DCOMPILING_DPLYR -DBOOST_NO_INT64_T -DBOOST_NO_INTEGRAL_INT64_T -DBOOST_NO_LONG_LONG -DRCPP_USING_UTF8_ERROR_STRING -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/bindrcpp/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/plogr/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include"    -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c hybrid_count.cpp -o hybrid_count.o
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:28:0,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17,
+                 from ../inst/include/dplyr/MultipleVectorVisitors.h:4,
+                 from hybrid_count.cpp:6:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/detail/shared_count.hpp:355:33: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     explicit shared_count( std::auto_ptr<Y> & r ): pi_( new sp_counted_impl_p<Y>( r.get() ) )
+                                 ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from hybrid_count.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/MultipleVectorVisitors.h:4,
+                 from hybrid_count.cpp:6:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:256:65: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+ template< class T, class R > struct sp_enable_if_auto_ptr< std::auto_ptr< T >, R >
+                                                                 ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from hybrid_count.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/MultipleVectorVisitors.h:4,
+                 from hybrid_count.cpp:6:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:471:31: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     explicit shared_ptr( std::auto_ptr<Y> & r ): px(r.get()), pn()
+                               ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from hybrid_count.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/MultipleVectorVisitors.h:4,
+                 from hybrid_count.cpp:6:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:484:22: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     shared_ptr( std::auto_ptr<Y> && r ): px(r.get()), pn()
+                      ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from hybrid_count.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/MultipleVectorVisitors.h:4,
+                 from hybrid_count.cpp:6:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:567:34: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     shared_ptr & operator=( std::auto_ptr<Y> & r )
+                                  ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from hybrid_count.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/MultipleVectorVisitors.h:4,
+                 from hybrid_count.cpp:6:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:576:34: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     shared_ptr & operator=( std::auto_ptr<Y> && r )
+                                  ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from hybrid_count.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/MultipleVectorVisitors.h:4,
+                 from hybrid_count.cpp:6:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp: In member function ‘boost::shared_ptr<T>& boost::shared_ptr<T>::operator=(std::auto_ptr<_Up>&&)’:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:578:38: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+         this_type( static_cast< std::auto_ptr<Y> && >( r ) ).swap( *this );
+                                      ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from hybrid_count.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+g++  -I/usr/share/R/include -DNDEBUG -I../inst/include -DCOMPILING_DPLYR -DBOOST_NO_INT64_T -DBOOST_NO_INTEGRAL_INT64_T -DBOOST_NO_LONG_LONG -DRCPP_USING_UTF8_ERROR_STRING -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/bindrcpp/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/plogr/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include"    -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c hybrid_debug.cpp -o hybrid_debug.o
+g++  -I/usr/share/R/include -DNDEBUG -I../inst/include -DCOMPILING_DPLYR -DBOOST_NO_INT64_T -DBOOST_NO_INTEGRAL_INT64_T -DBOOST_NO_LONG_LONG -DRCPP_USING_UTF8_ERROR_STRING -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/bindrcpp/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/plogr/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include"    -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c hybrid_in.cpp -o hybrid_in.o
+g++  -I/usr/share/R/include -DNDEBUG -I../inst/include -DCOMPILING_DPLYR -DBOOST_NO_INT64_T -DBOOST_NO_INTEGRAL_INT64_T -DBOOST_NO_LONG_LONG -DRCPP_USING_UTF8_ERROR_STRING -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/bindrcpp/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/plogr/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include"    -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c hybrid_minmax.cpp -o hybrid_minmax.o
+g++  -I/usr/share/R/include -DNDEBUG -I../inst/include -DCOMPILING_DPLYR -DBOOST_NO_INT64_T -DBOOST_NO_INTEGRAL_INT64_T -DBOOST_NO_LONG_LONG -DRCPP_USING_UTF8_ERROR_STRING -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/bindrcpp/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/plogr/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include"    -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c hybrid_nth.cpp -o hybrid_nth.o
+g++  -I/usr/share/R/include -DNDEBUG -I../inst/include -DCOMPILING_DPLYR -DBOOST_NO_INT64_T -DBOOST_NO_INTEGRAL_INT64_T -DBOOST_NO_LONG_LONG -DRCPP_USING_UTF8_ERROR_STRING -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/bindrcpp/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/plogr/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include"    -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c hybrid_offset.cpp -o hybrid_offset.o
+g++  -I/usr/share/R/include -DNDEBUG -I../inst/include -DCOMPILING_DPLYR -DBOOST_NO_INT64_T -DBOOST_NO_INTEGRAL_INT64_T -DBOOST_NO_LONG_LONG -DRCPP_USING_UTF8_ERROR_STRING -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/bindrcpp/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/plogr/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include"    -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c hybrid_simple.cpp -o hybrid_simple.o
+g++  -I/usr/share/R/include -DNDEBUG -I../inst/include -DCOMPILING_DPLYR -DBOOST_NO_INT64_T -DBOOST_NO_INTEGRAL_INT64_T -DBOOST_NO_LONG_LONG -DRCPP_USING_UTF8_ERROR_STRING -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/bindrcpp/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/plogr/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include"    -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c hybrid_window.cpp -o hybrid_window.o
+g++  -I/usr/share/R/include -DNDEBUG -I../inst/include -DCOMPILING_DPLYR -DBOOST_NO_INT64_T -DBOOST_NO_INTEGRAL_INT64_T -DBOOST_NO_LONG_LONG -DRCPP_USING_UTF8_ERROR_STRING -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/bindrcpp/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/plogr/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include"    -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c init.cpp -o init.o
+g++  -I/usr/share/R/include -DNDEBUG -I../inst/include -DCOMPILING_DPLYR -DBOOST_NO_INT64_T -DBOOST_NO_INTEGRAL_INT64_T -DBOOST_NO_LONG_LONG -DRCPP_USING_UTF8_ERROR_STRING -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/bindrcpp/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/plogr/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include"    -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c join.cpp -o join.o
+g++  -I/usr/share/R/include -DNDEBUG -I../inst/include -DCOMPILING_DPLYR -DBOOST_NO_INT64_T -DBOOST_NO_INTEGRAL_INT64_T -DBOOST_NO_LONG_LONG -DRCPP_USING_UTF8_ERROR_STRING -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/bindrcpp/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/plogr/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include"    -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c join_exports.cpp -o join_exports.o
+g++  -I/usr/share/R/include -DNDEBUG -I../inst/include -DCOMPILING_DPLYR -DBOOST_NO_INT64_T -DBOOST_NO_INTEGRAL_INT64_T -DBOOST_NO_LONG_LONG -DRCPP_USING_UTF8_ERROR_STRING -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/bindrcpp/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/plogr/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include"    -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c mutate.cpp -o mutate.o
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/scoped_ptr.hpp:13:0,
+                 from mutate.cpp:4:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/scoped_ptr.hpp:74:31: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     explicit scoped_ptr( std::auto_ptr<T> p ) BOOST_SP_NOEXCEPT : px( p.release() )
+                               ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from mutate.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:28:0,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from ../inst/include/dplyr/Result/CallProxy.h:4,
+                 from mutate.cpp:13:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/detail/shared_count.hpp:355:33: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     explicit shared_count( std::auto_ptr<Y> & r ): pi_( new sp_counted_impl_p<Y>( r.get() ) )
+                                 ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from mutate.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from ../inst/include/dplyr/Result/CallProxy.h:4,
+                 from mutate.cpp:13:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:256:65: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+ template< class T, class R > struct sp_enable_if_auto_ptr< std::auto_ptr< T >, R >
+                                                                 ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from mutate.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from ../inst/include/dplyr/Result/CallProxy.h:4,
+                 from mutate.cpp:13:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:471:31: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     explicit shared_ptr( std::auto_ptr<Y> & r ): px(r.get()), pn()
+                               ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from mutate.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from ../inst/include/dplyr/Result/CallProxy.h:4,
+                 from mutate.cpp:13:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:484:22: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     shared_ptr( std::auto_ptr<Y> && r ): px(r.get()), pn()
+                      ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from mutate.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from ../inst/include/dplyr/Result/CallProxy.h:4,
+                 from mutate.cpp:13:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:567:34: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     shared_ptr & operator=( std::auto_ptr<Y> & r )
+                                  ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from mutate.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from ../inst/include/dplyr/Result/CallProxy.h:4,
+                 from mutate.cpp:13:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:576:34: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     shared_ptr & operator=( std::auto_ptr<Y> && r )
+                                  ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from mutate.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from ../inst/include/dplyr/Result/CallProxy.h:4,
+                 from mutate.cpp:13:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp: In member function ‘boost::shared_ptr<T>& boost::shared_ptr<T>::operator=(std::auto_ptr<_Up>&&)’:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:578:38: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+         this_type( static_cast< std::auto_ptr<Y> && >( r ) ).swap( *this );
+                                      ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from mutate.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+gcc -std=gnu99 -I/usr/share/R/include -DNDEBUG -I../inst/include -DCOMPILING_DPLYR -DBOOST_NO_INT64_T -DBOOST_NO_INTEGRAL_INT64_T -DBOOST_NO_LONG_LONG -DRCPP_USING_UTF8_ERROR_STRING -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/bindrcpp/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/plogr/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include"    -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c rlang-export.c -o rlang-export.o
+g++  -I/usr/share/R/include -DNDEBUG -I../inst/include -DCOMPILING_DPLYR -DBOOST_NO_INT64_T -DBOOST_NO_INTEGRAL_INT64_T -DBOOST_NO_LONG_LONG -DRCPP_USING_UTF8_ERROR_STRING -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/bindrcpp/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/plogr/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include"    -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c rlang.cpp -o rlang.o
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:28:0,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17,
+                 from ../inst/include/dplyr/MultipleVectorVisitors.h:4,
+                 from ../inst/include/dplyr/dplyr.h:16,
+                 from ../inst/include/dplyr.h:8,
+                 from rlang.cpp:1:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/detail/shared_count.hpp:355:33: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     explicit shared_count( std::auto_ptr<Y> & r ): pi_( new sp_counted_impl_p<Y>( r.get() ) )
+                                 ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from ../inst/include/dplyr/main.h:4,
+                 from ../inst/include/dplyr.h:4,
+                 from rlang.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/MultipleVectorVisitors.h:4,
+                 from ../inst/include/dplyr/dplyr.h:16,
+                 from ../inst/include/dplyr.h:8,
+                 from rlang.cpp:1:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:256:65: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+ template< class T, class R > struct sp_enable_if_auto_ptr< std::auto_ptr< T >, R >
+                                                                 ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from ../inst/include/dplyr/main.h:4,
+                 from ../inst/include/dplyr.h:4,
+                 from rlang.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/MultipleVectorVisitors.h:4,
+                 from ../inst/include/dplyr/dplyr.h:16,
+                 from ../inst/include/dplyr.h:8,
+                 from rlang.cpp:1:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:471:31: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     explicit shared_ptr( std::auto_ptr<Y> & r ): px(r.get()), pn()
+                               ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from ../inst/include/dplyr/main.h:4,
+                 from ../inst/include/dplyr.h:4,
+                 from rlang.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/MultipleVectorVisitors.h:4,
+                 from ../inst/include/dplyr/dplyr.h:16,
+                 from ../inst/include/dplyr.h:8,
+                 from rlang.cpp:1:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:484:22: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     shared_ptr( std::auto_ptr<Y> && r ): px(r.get()), pn()
+                      ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from ../inst/include/dplyr/main.h:4,
+                 from ../inst/include/dplyr.h:4,
+                 from rlang.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/MultipleVectorVisitors.h:4,
+                 from ../inst/include/dplyr/dplyr.h:16,
+                 from ../inst/include/dplyr.h:8,
+                 from rlang.cpp:1:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:567:34: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     shared_ptr & operator=( std::auto_ptr<Y> & r )
+                                  ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from ../inst/include/dplyr/main.h:4,
+                 from ../inst/include/dplyr.h:4,
+                 from rlang.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/MultipleVectorVisitors.h:4,
+                 from ../inst/include/dplyr/dplyr.h:16,
+                 from ../inst/include/dplyr.h:8,
+                 from rlang.cpp:1:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:576:34: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     shared_ptr & operator=( std::auto_ptr<Y> && r )
+                                  ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from ../inst/include/dplyr/main.h:4,
+                 from ../inst/include/dplyr.h:4,
+                 from rlang.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/MultipleVectorVisitors.h:4,
+                 from ../inst/include/dplyr/dplyr.h:16,
+                 from ../inst/include/dplyr.h:8,
+                 from rlang.cpp:1:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp: In member function ‘boost::shared_ptr<T>& boost::shared_ptr<T>::operator=(std::auto_ptr<_Up>&&)’:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:578:38: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+         this_type( static_cast< std::auto_ptr<Y> && >( r ) ).swap( *this );
+                                      ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from ../inst/include/dplyr/main.h:4,
+                 from ../inst/include/dplyr.h:4,
+                 from rlang.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/scoped_ptr.hpp:13:0,
+                 from ../inst/include/dplyr/Result/CallbackProcessor.h:4,
+                 from ../inst/include/dplyr/Result/all.h:19,
+                 from ../inst/include/dplyr/dplyr.h:29,
+                 from ../inst/include/dplyr.h:8,
+                 from rlang.cpp:1:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/scoped_ptr.hpp: At global scope:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/scoped_ptr.hpp:74:31: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     explicit scoped_ptr( std::auto_ptr<T> p ) BOOST_SP_NOEXCEPT : px( p.release() )
+                               ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from ../inst/include/dplyr/main.h:4,
+                 from ../inst/include/dplyr.h:4,
+                 from rlang.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+g++  -I/usr/share/R/include -DNDEBUG -I../inst/include -DCOMPILING_DPLYR -DBOOST_NO_INT64_T -DBOOST_NO_INTEGRAL_INT64_T -DBOOST_NO_LONG_LONG -DRCPP_USING_UTF8_ERROR_STRING -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/bindrcpp/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/plogr/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include"    -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c select.cpp -o select.o
+g++  -I/usr/share/R/include -DNDEBUG -I../inst/include -DCOMPILING_DPLYR -DBOOST_NO_INT64_T -DBOOST_NO_INTEGRAL_INT64_T -DBOOST_NO_LONG_LONG -DRCPP_USING_UTF8_ERROR_STRING -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/bindrcpp/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/plogr/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include"    -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c set.cpp -o set.o
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/scoped_ptr.hpp:13:0,
+                 from set.cpp:4:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/scoped_ptr.hpp:74:31: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     explicit scoped_ptr( std::auto_ptr<T> p ) BOOST_SP_NOEXCEPT : px( p.release() )
+                               ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from set.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+g++  -I/usr/share/R/include -DNDEBUG -I../inst/include -DCOMPILING_DPLYR -DBOOST_NO_INT64_T -DBOOST_NO_INTEGRAL_INT64_T -DBOOST_NO_LONG_LONG -DRCPP_USING_UTF8_ERROR_STRING -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/bindrcpp/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/plogr/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include"    -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c slice.cpp -o slice.o
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/scoped_ptr.hpp:13:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:4,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from slice.cpp:8:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/scoped_ptr.hpp:74:31: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     explicit scoped_ptr( std::auto_ptr<T> p ) BOOST_SP_NOEXCEPT : px( p.release() )
+                               ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from slice.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:28:0,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from slice.cpp:8:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/detail/shared_count.hpp:355:33: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     explicit shared_count( std::auto_ptr<Y> & r ): pi_( new sp_counted_impl_p<Y>( r.get() ) )
+                                 ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from slice.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from slice.cpp:8:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:256:65: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+ template< class T, class R > struct sp_enable_if_auto_ptr< std::auto_ptr< T >, R >
+                                                                 ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from slice.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from slice.cpp:8:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:471:31: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     explicit shared_ptr( std::auto_ptr<Y> & r ): px(r.get()), pn()
+                               ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from slice.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from slice.cpp:8:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:484:22: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     shared_ptr( std::auto_ptr<Y> && r ): px(r.get()), pn()
+                      ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from slice.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from slice.cpp:8:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:567:34: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     shared_ptr & operator=( std::auto_ptr<Y> & r )
+                                  ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from slice.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from slice.cpp:8:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:576:34: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     shared_ptr & operator=( std::auto_ptr<Y> && r )
+                                  ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from slice.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from slice.cpp:8:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp: In member function ‘boost::shared_ptr<T>& boost::shared_ptr<T>::operator=(std::auto_ptr<_Up>&&)’:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:578:38: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+         this_type( static_cast< std::auto_ptr<Y> && >( r ) ).swap( *this );
+                                      ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from slice.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+g++  -I/usr/share/R/include -DNDEBUG -I../inst/include -DCOMPILING_DPLYR -DBOOST_NO_INT64_T -DBOOST_NO_INTEGRAL_INT64_T -DBOOST_NO_LONG_LONG -DRCPP_USING_UTF8_ERROR_STRING -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/bindrcpp/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/plogr/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include"    -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c summarise.cpp -o summarise.o
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/scoped_ptr.hpp:13:0,
+                 from summarise.cpp:4:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/scoped_ptr.hpp:74:31: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     explicit scoped_ptr( std::auto_ptr<T> p ) BOOST_SP_NOEXCEPT : px( p.release() )
+                               ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from summarise.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:28:0,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from ../inst/include/dplyr/Result/GroupedCallReducer.h:7,
+                 from summarise.cpp:11:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/detail/shared_count.hpp:355:33: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     explicit shared_count( std::auto_ptr<Y> & r ): pi_( new sp_counted_impl_p<Y>( r.get() ) )
+                                 ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from summarise.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from ../inst/include/dplyr/Result/GroupedCallReducer.h:7,
+                 from summarise.cpp:11:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:256:65: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+ template< class T, class R > struct sp_enable_if_auto_ptr< std::auto_ptr< T >, R >
+                                                                 ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from summarise.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from ../inst/include/dplyr/Result/GroupedCallReducer.h:7,
+                 from summarise.cpp:11:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:471:31: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     explicit shared_ptr( std::auto_ptr<Y> & r ): px(r.get()), pn()
+                               ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from summarise.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from ../inst/include/dplyr/Result/GroupedCallReducer.h:7,
+                 from summarise.cpp:11:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:484:22: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     shared_ptr( std::auto_ptr<Y> && r ): px(r.get()), pn()
+                      ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from summarise.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from ../inst/include/dplyr/Result/GroupedCallReducer.h:7,
+                 from summarise.cpp:11:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:567:34: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     shared_ptr & operator=( std::auto_ptr<Y> & r )
+                                  ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from summarise.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from ../inst/include/dplyr/Result/GroupedCallReducer.h:7,
+                 from summarise.cpp:11:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:576:34: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+     shared_ptr & operator=( std::auto_ptr<Y> && r )
+                                  ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from summarise.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+In file included from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/shared_ptr.hpp:17:0,
+                 from ../inst/include/dplyr/Result/GroupedHybridCall.h:5,
+                 from ../inst/include/dplyr/Result/GroupedCallProxy.h:9,
+                 from ../inst/include/dplyr/Result/GroupedCallReducer.h:7,
+                 from summarise.cpp:11:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp: In member function ‘boost::shared_ptr<T>& boost::shared_ptr<T>::operator=(std::auto_ptr<_Up>&&)’:
+/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include/boost/smart_ptr/shared_ptr.hpp:578:38: warning: ‘template<class> class std::auto_ptr’ is deprecated [-Wdeprecated-declarations]
+         this_type( static_cast< std::auto_ptr<Y> && >( r ) ).swap( *this );
+                                      ^~~~~~~~
+In file included from /usr/include/c++/7/bits/locale_conv.h:41:0,
+                 from /usr/include/c++/7/locale:43,
+                 from /usr/include/c++/7/iomanip:43,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/RcppCommon.h:52,
+                 from /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include/Rcpp.h:27,
+                 from pch.h:1,
+                 from summarise.cpp:1:
+/usr/include/c++/7/bits/unique_ptr.h:51:28: note: declared here
+   template<typename> class auto_ptr;
+                            ^~~~~~~~
+g++  -I/usr/share/R/include -DNDEBUG -I../inst/include -DCOMPILING_DPLYR -DBOOST_NO_INT64_T -DBOOST_NO_INTEGRAL_INT64_T -DBOOST_NO_LONG_LONG -DRCPP_USING_UTF8_ERROR_STRING -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/bindrcpp/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/plogr/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include"    -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c test.cpp -o test.o
+g++  -I/usr/share/R/include -DNDEBUG -I../inst/include -DCOMPILING_DPLYR -DBOOST_NO_INT64_T -DBOOST_NO_INTEGRAL_INT64_T -DBOOST_NO_LONG_LONG -DRCPP_USING_UTF8_ERROR_STRING -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/bindrcpp/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/plogr/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include"    -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c utils.cpp -o utils.o
+g++  -I/usr/share/R/include -DNDEBUG -I../inst/include -DCOMPILING_DPLYR -DBOOST_NO_INT64_T -DBOOST_NO_INTEGRAL_INT64_T -DBOOST_NO_LONG_LONG -DRCPP_USING_UTF8_ERROR_STRING -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/BH/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/bindrcpp/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/plogr/include" -I"/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/Rcpp/include"    -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c window.cpp -o window.o
+g++ -shared -L/usr/lib/R/lib -Wl,-Bsymbolic-functions -Wl,-z,relro -o dplyr.so RcppExports.o address.o api.o arrange.o between.o bind.o combine_variables.o distinct.o encoding.o filter.o group_by.o group_indices.o hybrid.o hybrid_count.o hybrid_debug.o hybrid_in.o hybrid_minmax.o hybrid_nth.o hybrid_offset.o hybrid_simple.o hybrid_window.o init.o join.o join_exports.o mutate.o rlang-export.o rlang.o select.o set.o slice.o summarise.o test.o utils.o window.o -L/usr/lib/R/lib -lR
+installing to /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/dplyr/libs
+,** R
+,** data
+,*** moving datasets to lazyload DB
+,** inst
+,** tests
+,** preparing package for lazy loading
+,** help
+,*** installing help indices
+,*** copying figures
+,** building package indices
+,** installing vignettes
+,** testing if installed package can be loaded
+,* DONE (dplyr)
+Reloading installed dplyr
+unloadNamespace("dplyr") not successful, probably because another loaded package depends on it.Forcing unload. If you encounter problems, please restart R.
+Error: package or namespace load failed for ‘dplyr’ in get(Info[i, 1], envir = env):
+ lazy-load database '/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/dplyr/R/dplyr.rdb' is corrupt
+trying URL 'https://cloud.r-project.org/src/contrib/ggplot2_3.1.0.tar.gz'
+Content type 'application/x-gzip' length 2863109 bytes (2.7 MB)
+==================================================
+downloaded 2.7 MB
+
+Installing ggplot2
+'/usr/lib/R/bin/R' --no-site-file --no-environ --no-save --no-restore --quiet  \
+  CMD INSTALL '/tmp/Rtmpit0sUm/devtools1aa2431a45d1/ggplot2'  \
+  --library='/home/llnn/R/x86_64-pc-linux-gnu-library/3.4' --install-tests 
+
+,* installing *source* package ‘ggplot2’ ...
+,** package ‘ggplot2’ successfully unpacked and MD5 sums checked
+,** R
+,** data
+,*** moving datasets to lazyload DB
+,** inst
+,** tests
+,** preparing package for lazy loading
+,** help
+,*** installing help indices
+,*** copying figures
+,** building package indices
+,** installing vignettes
+,** testing if installed package can be loaded
+,* DONE (ggplot2)
+Reloading installed ggplot2
+unloadNamespace("ggplot2") not successful, probably because another loaded package depends on it.Forcing unload. If you encounter problems, please restart R.
+Error: package or namespace load failed for ‘ggplot2’ in get(Info[i, 1], envir = env):
+ lazy-load database '/home/llnn/R/x86_64-pc-linux-gnu-library/3.4/ggplot2/R/ggplot2.rdb' is corrupt
+trying URL 'https://cloud.r-project.org/src/contrib/jpeg_0.1-8.tar.gz'
+Content type 'application/x-gzip' length 18046 bytes (17 KB)
+==================================================
+downloaded 17 KB
+
+Installing jpeg
+'/usr/lib/R/bin/R' --no-site-file --no-environ --no-save --no-restore --quiet  \
+  CMD INSTALL '/tmp/Rtmpit0sUm/devtools1aa26db18cc7/jpeg'  \
+  --library='/home/llnn/R/x86_64-pc-linux-gnu-library/3.4' --install-tests 
+
+,* installing *source* package ‘jpeg’ ...
+,** package ‘jpeg’ successfully unpacked and MD5 sums checked
+,** libs
+gcc -std=gnu99 -I/usr/share/R/include -DNDEBUG      -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c read.c -o read.o
+gcc -std=gnu99 -I/usr/share/R/include -DNDEBUG      -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c write.c -o write.o
+g++ -shared -L/usr/lib/R/lib -Wl,-Bsymbolic-functions -Wl,-z,relro -o jpeg.so read.o write.o -ljpeg -L/usr/lib/R/lib -lR
+installing to /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/jpeg/libs
+,** R
+,** inst
+,** tests
+,** preparing package for lazy loading
+,** help
+,*** installing help indices
+,** building package indices
+,** testing if installed package can be loaded
+,* DONE (jpeg)
+trying URL 'https://cloud.r-project.org/src/contrib/png_0.1-7.tar.gz'
+Content type 'application/x-gzip' length 24990 bytes (24 KB)
+==================================================
+downloaded 24 KB
+
+Installing png
+'/usr/lib/R/bin/R' --no-site-file --no-environ --no-save --no-restore --quiet  \
+  CMD INSTALL '/tmp/Rtmpit0sUm/devtools1aa233791b11/png'  \
+  --library='/home/llnn/R/x86_64-pc-linux-gnu-library/3.4' --install-tests 
+
+,* installing *source* package ‘png’ ...
+,** package ‘png’ successfully unpacked and MD5 sums checked
+,** libs
+gcc -std=gnu99 -I/usr/share/R/include -DNDEBUG      `libpng-config --cflags` -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c read.c -o read.o
+gcc -std=gnu99 -I/usr/share/R/include -DNDEBUG      `libpng-config --cflags` -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c write.c -o write.o
+g++ -shared -L/usr/lib/R/lib -Wl,-Bsymbolic-functions -Wl,-z,relro -o png.so read.o write.o -lpng16 -lm -lz -lm -L/usr/lib/R/lib -lR
+installing to /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/png/libs
+,** R
+,** inst
+,** preparing package for lazy loading
+,** help
+,*** installing help indices
+,** building package indices
+,** testing if installed package can be loaded
+,* DONE (png)
+trying URL 'https://cloud.r-project.org/src/contrib/RgoogleMaps_1.4.2.tar.gz'
+Content type 'application/x-gzip' length 794533 bytes (775 KB)
+==================================================
+downloaded 775 KB
+
+Installing RgoogleMaps
+'/usr/lib/R/bin/R' --no-site-file --no-environ --no-save --no-restore --quiet  \
+  CMD INSTALL '/tmp/Rtmpit0sUm/devtools1aa26adf4545/RgoogleMaps'  \
+  --library='/home/llnn/R/x86_64-pc-linux-gnu-library/3.4' --install-tests 
+
+,* installing *source* package ‘RgoogleMaps’ ...
+,** package ‘RgoogleMaps’ successfully unpacked and MD5 sums checked
+,** R
+,** data
+,** inst
+,** preparing package for lazy loading
+,** help
+,*** installing help indices
+,** building package indices
+,** testing if installed package can be loaded
+,* DONE (RgoogleMaps)
+trying URL 'https://cloud.r-project.org/src/contrib/rjson_0.2.20.tar.gz'
+Content type 'application/x-gzip' length 99600 bytes (97 KB)
+==================================================
+downloaded 97 KB
+
+Installing rjson
+'/usr/lib/R/bin/R' --no-site-file --no-environ --no-save --no-restore --quiet  \
+  CMD INSTALL '/tmp/Rtmpit0sUm/devtools1aa24362efaa/rjson'  \
+  --library='/home/llnn/R/x86_64-pc-linux-gnu-library/3.4' --install-tests 
+
+,* installing *source* package ‘rjson’ ...
+,** package ‘rjson’ successfully unpacked and MD5 sums checked
+,** libs
+g++  -I/usr/share/R/include -DNDEBUG      -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c dump.cpp -o dump.o
+gcc -std=gnu99 -I/usr/share/R/include -DNDEBUG      -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c parser.c -o parser.o
+gcc -std=gnu99 -I/usr/share/R/include -DNDEBUG      -fpic  -g -O2 -fdebug-prefix-map=/build/r-base-AitvI6/r-base-3.4.4=. -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time -D_FORTIFY_SOURCE=2 -g  -c register.c -o register.o
+g++ -shared -L/usr/lib/R/lib -Wl,-Bsymbolic-functions -Wl,-z,relro -o rjson.so dump.o parser.o register.o -L/usr/lib/R/lib -lR
+installing to /home/llnn/R/x86_64-pc-linux-gnu-library/3.4/rjson/libs
+,** R
+,** inst
+,** preparing package for lazy loading
+,** help
+,*** installing help indices
+,** building package indices
+,** installing vignettes
+,** testing if installed package can be loaded
+,* DONE (rjson)
+'/usr/lib/R/bin/R' --no-site-file --no-environ --no-save --no-restore --quiet  \
+  CMD INSTALL '/tmp/Rtmpit0sUm/devtools1aa237662a34/dkahle-ggmap-c054613'  \
+  --library='/home/llnn/R/x86_64-pc-linux-gnu-library/3.4' --install-tests 
 
 ,* installing *source* package ‘ggmap’ ...
 ,** R
@@ -533,6 +2310,9 @@ Installing ggmap
 ,** building package indices
 ,** testing if installed package can be loaded
 ,* DONE (ggmap)
+Warning messages:
+1: In get(Info[i, 1], envir = env) : internal error -3 in R_decompress1
+2: In get(Info[i, 1], envir = env) : internal error -3 in R_decompress1
 #+end_example
 
 #+begin_src R :results output :session *R* :exports both
@@ -542,18 +2322,18 @@ df
 #+RESULTS:
 #+begin_example
 # A tibble: 12,515 x 44
-       ID LONGITUDE LATITUDE LOG1  LOG2  PREDIAL1 LOCAL TIPO_ACID LOCAL_VIA
-    <int>     <dbl>    <dbl> <chr> <chr>    <int> <chr> <chr>     <chr>    
- 1 623243 -51233864  -3.01e7 R AR… R CO…        0 Cruz… ATROPELA… R ARAPEI…
- 2 622413 -51231947  -3.01e7 R PA… R JO…        0 Cruz… ABALROAM… R PADRE …
- 3 622460 -51212026  -3.00e7 AV D… <NA>         0 Logr… ATROPELA… AV DO LA…
- 4 622540 -51185614  -3.00e7 AV D… R CA…        0 Cruz… CHOQUE    AV DR NI…
- 5 622181 -51097360  -3.01e7 ESTR… <NA>      8487 Logr… CHOQUE    8487 EST…
- 6 622232 -51225022  -3.00e7 AV I… <NA>       320 Logr… COLISAO   320 AV I…
- 7 622414 -51221523  -3.01e7 R JO… <NA>       965 Logr… COLISAO   965 R JO…
- 8 622186 -51218406  -3.00e7 AV E… <NA>       240 Logr… ABALROAM… 240 AV E…
- 9 622235 -51215827  -3.00e7 R GE… <NA>      1445 Logr… COLISAO   1445 R G…
-10 622185 -51200627  -3.00e7 AV E… <NA>         0 Logr… QUEDA     AV EDVAL…
+       ID LONGITUDE LATITUDE LOG1    LOG2   PREDIAL1 LOCAL TIPO_ACID LOCAL_VIA 
+    <int>     <dbl>    <dbl> <chr>   <chr>     <int> <chr> <chr>     <chr>     
+ 1 623243     -51.2    -30.1 R ARAP… R COM…        0 Cruz… ATROPELA… R ARAPEI …
+ 2 622413     -51.2    -30.1 R PADR… R JOA…        0 Cruz… ABALROAM… R PADRE J…
+ 3 622460     -51.2    -30.0 AV DO … <NA>          0 Logr… ATROPELA… AV DO LAMI
+ 4 622540     -51.2    -30.0 AV DR … R CAR…        0 Cruz… CHOQUE    AV DR NIL…
+ 5 622181     -51.1    -30.1 ESTR J… <NA>       8487 Logr… CHOQUE    8487 ESTR…
+ 6 622232     -51.2    -30.0 AV IPI… <NA>        320 Logr… COLISAO   320 AV IP…
+ 7 622414     -51.2    -30.1 R JOSE… <NA>        965 Logr… COLISAO   965 R JOS…
+ 8 622186     -51.2    -30.0 AV ERI… <NA>        240 Logr… ABALROAM… 240 AV ER…
+ 9 622235     -51.2    -30.0 R GEN … <NA>       1445 Logr… COLISAO   1445 R GE…
+10 622185     -51.2    -30.0 AV EDV… <NA>          0 Logr… QUEDA     AV EDVALD…
 # ... with 12,505 more rows, and 35 more variables: QUEDA_ARR <int>,
 #   DATA <date>, DATA_HORA <dttm>, DIA_SEM <chr>, HORA <time>, FERIDOS <int>,
 #   FERIDOS_GR <int>, MORTES <int>, MORTE_POST <int>, FATAIS <int>, AUTO <int>,
@@ -569,11 +2349,44 @@ df
 library(tidyverse)
 library(ggmap)
 
-ggmap::get_stamenmap(bbox = c(left = -51.3, bottom = -30.15, right = -51.0, top = -29.9), zoom = 12, maptype = c("terrain") ) %>% ggmap()
+#ggmap::get_stamenmap(bbox = c(left = -51.3, bottom = -30.15, right = -51.0, top = -29.9), zoom = 12, maptype = c("terrain") ) %>% ggmap()
+
+data_map <- df %>% select(LONGITUDE, LATITUDE) %>% 
+                   filter(LONGITUDE > -51.28, 
+                          LONGITUDE < -51.12,
+                          LATITUDE > -30.1,
+                          LATITUDE < -29.9)
+data_map$LATITUDE <- data_map$LATITUDE-0.001
+
+qmplot(LONGITUDE, LATITUDE, data = data_map, geom = "blank", 
+       maptype = "terrain", 
+       #source = "osm",
+       darken = .4, legend = "topleft",
+       zoom=13) +
+stat_density_2d(aes(fill = ..level..), geom = "polygon", alpha = .3, color = NA, n=300, h=c(0.003,0.003)) +
+scale_fill_gradient2("Number of\nAccidents", low = "white", 
+                     mid = "yellow", high = "red", breaks=c(400,600,800,1000,1200,1400))
+
+
 #+end_src
 
 #+RESULTS:
 
+#+begin_src R :results output :session *R* :exports both
+bb <- function(x)
+{
+    r <- quantile(x, c(0.25, 0.75))
+    h <- (r[2] - r[1])/1.34
+    4 * 1.06 * min(sqrt(var(x)), h) * length(x)^(-1/5)
+}
+
+bb(df$LONGITUDE)
+bb(df$LATITUDE)
+#+end_src
+
+#+RESULTS:
+: [1] 0.02528947
+: [1] 0.02853702
 
 * Homework 1
 
