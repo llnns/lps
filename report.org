@@ -116,7 +116,7 @@ df %>% group_by(DIA_SEM) %>% summarize(total = n()) %>%
        theme_bw(base_size=15) +
        geom_col() +
        xlab("Month") +
-       ylab("Avegere of Vehicles involved in accidents") +
+       ylab("Total Vehicles involved in accidents") +
        ggtitle("Number of Vehicles involved in accidents on Porto Alegre 2016") +
        theme(legend.position="bottom") + 
        scale_fill_discrete(name = "Month")
