@@ -123,7 +123,7 @@ df %>% group_by(DIA_SEM) %>% summarize(total = n()) %>%
 #+end_src
 
 #+RESULTS:
-[[file:/tmp/babel-28511kDD/question328511tim.png]]
+[[file:question3.png]]
 
 
 * Advanced: are there some area in POA with more accidents?
